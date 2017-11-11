@@ -2,13 +2,14 @@ package hifly.ac.kr.attention;
 
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
 import java.net.Socket;
 
 /**
  * Created by CYSN on 2017-11-09.
  */
 
-public class User {
+public class User implements Serializable{
     private int icon;
     private String name;
     private String stateMessage;

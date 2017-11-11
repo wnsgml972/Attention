@@ -1,11 +1,15 @@
 package hifly.ac.kr.attention;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +32,29 @@ public class Main_Friend_Fragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext());
+        Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                int message = msg.getData().getInt("message");
+                switch(message){
+                    case 1:
+                        Intent intent = new Intent(getActivity().getApplicationContext(), Main_Friend_Info_Activity.class);
+                     /*   User user = (User)msg.getData().getSerializable("object");
+                        Log.i("kkkk",user.getName() + " " + user.getStateMessage());*/
+                        intent.putExtra("object",msg.getData().getSerializable("object"));
+                        startActivity(intent);
+                        break;
+                }
+
+            }
+        };
+        Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext(),handler);
         for(int i=0; i<10; i++) {
             adapter.addUser(new User(0, "최용석", "좋은 하루~"));
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setAdapter(adapter);
+
     }
 }
