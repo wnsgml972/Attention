@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+       /* Intent messageServiceIntent = new Intent("hifly.ac.kr.attention.message_service");
+        startService(messageServiceIntent);*/
         viewPager = (ViewPager) findViewById(R.id.main_frame_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabLayout);
         TabLayout.Tab friendTab = tabLayout.newTab();
