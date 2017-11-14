@@ -2,25 +2,19 @@ package hifly.ac.kr.attention;
 
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 public class Main_Friend_Info_Activity extends AppCompatActivity {
+
     private TextView nameTextView;
     private TextView stateTextView;
     private FloatingActionButton callFab;
     private FloatingActionButton messageFab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +29,15 @@ public class Main_Friend_Info_Activity extends AppCompatActivity {
             stateTextView.setText(user.getStateMessage());
         }
     }
+
     public void call(View v){
-        Intent intent = new Intent(getApplicationContext(), Main_Fiend_Call_Activity.class);
+        Intent intent = new Intent(getApplicationContext(), Main_Friend_Call_Activity.class);
+        intent.putExtra("object",(User)getIntent().getSerializableExtra("object"));
+        startActivity(intent);
+    }
+
+    public void message(View v){
+        Intent intent = new Intent(getApplicationContext(), Main_Friend_Message_Activity.class);
         intent.putExtra("object",(User)getIntent().getSerializableExtra("object"));
         startActivity(intent);
     }

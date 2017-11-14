@@ -1,9 +1,6 @@
 package hifly.ac.kr.attention;
 
-import android.graphics.drawable.Drawable;
-
 import java.io.Serializable;
-import java.net.Socket;
 
 /**
  * Created by CYSN on 2017-11-09.

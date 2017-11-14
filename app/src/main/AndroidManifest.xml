@@ -24,7 +24,9 @@
         </activity>
         <activity android:name=".Main_Friend_Info_Activity">
         </activity>
-        <activity android:name=".Main_Fiend_Call_Activity">
+        <activity android:name=".Main_Friend_Call_Activity">
+        </activity>
+        <activity android:name=".Main_Friend_Message_Activity">
         </activity>
     </application>
 

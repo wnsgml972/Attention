@@ -13,12 +13,12 @@ import android.widget.TextView;
  * Created by CYSN on 2017-11-12.
  */
 
-public class Main_Fiend_Message_Activity extends AppCompatActivity {
+public class Main_Friend_Message_Activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_friend_call);
+        setContentView(R.layout.activity_main_friend_message);
 
 
     }

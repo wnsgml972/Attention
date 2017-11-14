@@ -16,7 +16,7 @@ import android.widget.TextView;
  * Created by CYSN on 2017-11-12.
  */
 
-public class Main_Fiend_Call_Activity extends AppCompatActivity {
+public class Main_Friend_Call_Activity extends AppCompatActivity {
     private FloatingActionButton call_endFab;
     private SoundPool sound;
     private int soundId;

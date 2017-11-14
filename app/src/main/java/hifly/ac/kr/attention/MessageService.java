@@ -10,7 +10,7 @@ import java.net.Socket;
 /**
  * Created by CYSN on 2017-11-14.
  */
-
+/*
 public class MessageService extends Service {
     private final String SERVER_IP = "192.168.0.1";
     private final int SERVER_PORT = 10035;
@@ -41,3 +41,4 @@ public class MessageService extends Service {
         }
     }
 }
+*/

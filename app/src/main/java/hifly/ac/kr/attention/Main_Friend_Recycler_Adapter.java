@@ -24,6 +24,7 @@ import java.util.List;
  */
 
 public class Main_Friend_Recycler_Adapter extends RecyclerView.Adapter<Main_Friend_Recycler_Adapter.Main_Friend_ViewHolder>{
+
     private Typeface typeface;
     private ArrayList<User> arrayList;
     private Context context;
