@@ -16,30 +16,99 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.7"
-            android:src="@drawable/cat"
+            android:background="#81cee7"
             android:scaleType="centerCrop"
-            android:background="#81cee7" />
+            android:src="@drawable/cat" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"></LinearLayout>
+            android:layout_weight="0.05"></LinearLayout>
 
         <TextView
             android:id="@+id/main_friend_info_name_textView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
-            android:textSize="25sp"
-            android:gravity="center" />
+            android:layout_weight="0.05"
+            android:gravity="center"
+            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/main_friend_info_state_textView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.1"
-            android:textSize="10sp"
-            android:gravity="center" />
+            android:layout_weight="0.2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/main_friend_info_state_textView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:textSize="10sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.75"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/main_friend_info_call_fab"
+                        app:fabSize="mini"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/call"
+                        android:onClick="call"
+                        android:backgroundTint="#93b3f4"
+                        app:borderWidth="0dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="30dp"
+                        android:text="call" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/main_friend_info_message_fab"
+                        app:fabSize="mini"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:backgroundTint="#93b3f4"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/message"
+                        app:borderWidth="0dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="message" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

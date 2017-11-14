@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context="hifly.ac.kr.attention.MainActivity">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_friend_recyclerview"
         android:layout_width="match_parent"
+        android:scrollbars="vertical"
         android:layout_height="match_parent">
-
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>
 

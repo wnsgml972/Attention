@@ -20,8 +20,9 @@ import android.view.ViewGroup;
 
 public class Main_Friend_Fragment extends Fragment {
     private RecyclerView recyclerView;
-    public Main_Friend_Fragment(){}
+    public Main_Friend_Fragment(){
 
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_friend, container, false);
@@ -32,29 +33,13 @@ public class Main_Friend_Fragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Handler handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                int message = msg.getData().getInt("message");
-                switch(message){
-                    case 1:
-                        Intent intent = new Intent(getActivity().getApplicationContext(), Main_Friend_Info_Activity.class);
-                     /*   User user = (User)msg.getData().getSerializable("object");
-                        Log.i("kkkk",user.getName() + " " + user.getStateMessage());*/
-                        intent.putExtra("object",msg.getData().getSerializable("object"));
-                        startActivity(intent);
-                        break;
-                }
+        Handler handler = new MainActivity.MyHandler((MainActivity)getActivity());
 
-            }
-        };
         Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext(),handler);
         for(int i=0; i<10; i++) {
             adapter.addUser(new User(0, "최용석", "좋은 하루~"));
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setAdapter(adapter);
-
     }
 }
