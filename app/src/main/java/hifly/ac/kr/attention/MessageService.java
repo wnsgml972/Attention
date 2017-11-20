@@ -12,7 +12,7 @@ import java.net.Socket;
  */
 /*
 public class MessageService extends Service {
-    private final String SERVER_IP = "192.168.0.1";
+    private final String SERVER_IP = "223.194.152.243";
     private final int SERVER_PORT = 10035;
     private Socket socket;
     private DataInputStream dis;
@@ -40,5 +40,4 @@ public class MessageService extends Service {
             }
         }
     }
-}
-*/
+}*/

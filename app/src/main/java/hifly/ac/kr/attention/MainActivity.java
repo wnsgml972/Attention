@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import java.lang.ref.WeakReference;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
     private Main_Friend_Fragment mainFragment2 = new Main_Friend_Fragment();
     private Main_Friend_Fragment mainFragment3 = new Main_Friend_Fragment();
-
+    private Button voiceBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         startService(messageServiceIntent);*/
         viewPager = (ViewPager) findViewById(R.id.main_frame_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabLayout);
+        voiceBtn = (Button) findViewById(R.id.voiceBtn);
         TabLayout.Tab friendTab = tabLayout.newTab();
         friendTab.setIcon(R.drawable.people);
         tabLayout.addTab(friendTab);
@@ -89,6 +91,12 @@ public class MainActivity extends AppCompatActivity {
                     return null;
             }
         }
+    }
+    public void voiceActivity(View v){
+        Intent intent = new Intent(this, VoiceTest.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+
     }
 
 
