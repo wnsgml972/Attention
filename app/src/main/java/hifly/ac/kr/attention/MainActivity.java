@@ -2,14 +2,13 @@ package hifly.ac.kr.attention;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
+import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.Button;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
+
     private final MyHandler mHandler = new MyHandler(this);
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -31,16 +31,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       /* Intent messageServiceIntent = new Intent("hifly.ac.kr.attention.message_service");
-        startService(messageServiceIntent);*/
+        initViewPager();
+    }
+
+    private void initViewPager(){
         viewPager = (ViewPager) findViewById(R.id.main_frame_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabLayout);
         voiceBtn = (Button) findViewById(R.id.voiceBtn);
         TabLayout.Tab friendTab = tabLayout.newTab();
         friendTab.setIcon(R.drawable.people);
         tabLayout.addTab(friendTab);
-        tabLayout.addTab(tabLayout.newTab().setText("글쎄"));
-        tabLayout.addTab(tabLayout.newTab().setText("흠"));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.chat));
+        tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.emsy));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                //icon 색 바꾸는거 추가
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -66,6 +67,34 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);
+        int unSelectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Gray);
+
+        tabLayout.getTabAt(0).getIcon().setColorFilter(selectedColor , PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(unSelectedColor, PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(unSelectedColor, PorterDuff.Mode.SRC_IN);
+
+        tabLayout.setOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);
+                        tab.getIcon().setColorFilter(selectedColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        int unSelectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Gray);
+                        tab.getIcon().setColorFilter(unSelectedColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                }
+        );
     }
 
     public class PageAdapter extends FragmentStatePagerAdapter {
@@ -92,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     public void voiceActivity(View v){
         Intent intent = new Intent(this, VoiceTest.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-
     }
 
 

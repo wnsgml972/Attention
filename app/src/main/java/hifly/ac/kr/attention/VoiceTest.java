@@ -28,7 +28,7 @@ import java.nio.ByteOrder;
  */
 
 public class VoiceTest extends AppCompatActivity {
-    private final String TAG = "CYSN";
+    private final String TAG = "KKKK";
 
     private Intent voiceIntent;
     @Override

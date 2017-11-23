@@ -23,8 +23,8 @@ import java.net.Socket;
  */
 
 public class VoiceService extends Service {
-    private final String TAG = "CYSN";
-    private final String SERVER_IP = "223.194.154.62";
+    private final String TAG = "KKKK";
+    private final String SERVER_IP = "223.194.159.18";
     private final int SERVER_PORT = 10035;
     private final int SERVER_UDP_PORT = 10036;
     private final int RECORDING_RATE = 44100;

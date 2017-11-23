@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 public class Main_Friend_Fragment extends Fragment {
     private RecyclerView recyclerView;
+
     public Main_Friend_Fragment(){
 
     }

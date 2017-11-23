@@ -29,6 +29,7 @@ public class Main_Friend_Recycler_Adapter extends RecyclerView.Adapter<Main_Frie
     private ArrayList<User> arrayList;
     private Context context;
     private Handler handler;
+
     public Main_Friend_Recycler_Adapter(Context context, Handler handler){
         this.context = context;
         this.handler = handler;

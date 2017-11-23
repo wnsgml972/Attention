@@ -22,6 +22,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity {
     private int soundId;
     private TextView textView;
     private MediaPlayer mp;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
