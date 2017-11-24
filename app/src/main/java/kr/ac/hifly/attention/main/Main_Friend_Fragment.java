@@ -21,6 +21,7 @@ import kr.ac.hifly.attention.data.User;
 
 public class Main_Friend_Fragment extends Fragment {
     private RecyclerView recyclerView;
+
     public Main_Friend_Fragment(){
 
     }

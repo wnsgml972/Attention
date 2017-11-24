@@ -22,7 +22,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_friend_message);
 
-
     }
 
 }

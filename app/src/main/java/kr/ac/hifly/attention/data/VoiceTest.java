@@ -30,7 +30,7 @@ import hifly.ac.kr.attention.R;
  */
 
 public class VoiceTest extends AppCompatActivity {
-    private final String TAG = "CYSN";
+    private final String TAG = "KKKK";
 
     private Intent voiceIntent;
     @Override
