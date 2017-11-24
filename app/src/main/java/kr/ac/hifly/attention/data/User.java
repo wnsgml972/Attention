@@ -1,6 +1,8 @@
-package hifly.ac.kr.attention;
+package kr.ac.hifly.attention.data;
 
 import java.io.Serializable;
+
+import hifly.ac.kr.attention.R;
 
 /**
  * Created by CYSN on 2017-11-09.
@@ -8,6 +10,7 @@ import java.io.Serializable;
 
 public class User implements Serializable{
     private int icon;
+    private String uuid;//유저간 고유 ID
     private String name;
     private String stateMessage;
 

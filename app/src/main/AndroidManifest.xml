@@ -3,6 +3,9 @@
     package="hifly.ac.kr.attention">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,21 +19,31 @@
             </intent-filter>
         </service>-->
 
-        <activity android:name=".MainActivity">
+        <activity android:name="kr.ac.hifly.attention.main.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main_Friend_Info_Activity">
+        <activity android:name="kr.ac.hifly.attention.main.MainActivity">
         </activity>
-        <activity android:name=".Main_Friend_Call_Activity">
+        <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Info_Activity">
         </activity>
-        <activity android:name=".Main_Friend_Message_Activity">
+        <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Call_Activity">
         </activity>
-        <activity android:name=".VoiceTest"/>
-        <service android:name=".VoiceService"/>
+        <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity">
+        </activity>
+        <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Message_Activity">
+        </activity>
+        <activity android:name="kr.ac.hifly.attention.data.VoiceTest"/>
+
+        <!--This is service part-->
+        <service android:name="kr.ac.hifly.attention.messageCore.MessageService"/>
+        <service android:name="kr.ac.hifly.attention.voiceCore.Call_Service"/>
+
+        <!--<service android:name=".VoiceService"/>-->
+
 
     </application>
 

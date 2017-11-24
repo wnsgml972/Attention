@@ -1,18 +1,19 @@
-package hifly.ac.kr.attention;
+package kr.ac.hifly.attention.main;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.data.User;
 
 /**
  * Created by CYSN on 2017-11-09.
@@ -36,9 +37,13 @@ public class Main_Friend_Fragment extends Fragment {
         Handler handler = new MainActivity.MyHandler((MainActivity)getActivity());
 
         Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext(),handler);
+        adapter.addUser(null);
+        adapter.addUser(new User(0, "최용석", "좋은 하루~"));
+        adapter.addUser(null);
         for(int i=0; i<10; i++) {
             adapter.addUser(new User(0, "최용석", "좋은 하루~"));
         }
+        adapter.addUser(new User(0, "김준희", "오지구요 지리구요 고요고요 고요한밤이구요~"));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }

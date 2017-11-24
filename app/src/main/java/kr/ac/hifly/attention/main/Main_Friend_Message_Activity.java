@@ -1,4 +1,4 @@
-package hifly.ac.kr.attention;
+package kr.ac.hifly.attention.main;
 
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import hifly.ac.kr.attention.R;
 
 /**
  * Created by CYSN on 2017-11-12.

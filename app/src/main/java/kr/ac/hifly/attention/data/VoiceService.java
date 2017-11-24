@@ -1,3 +1,4 @@
+/*
 package hifly.ac.kr.attention;
 
 import android.app.NotificationManager;
@@ -12,21 +13,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+*/
 /**
  * Created by CYSN on 2017-11-19.
- */
+ *//*
+
 
 public class VoiceService extends Service {
     private final String TAG = "CYSN";
     private final String SERVER_IP = "223.194.154.62";
     private final int SERVER_PORT = 10035;
-    private final int SERVER_UDP_PORT = 10036;
+    private int SERVER_UDP_PORT = 10036;
     private final int RECORDING_RATE = 44100;
     //private final int RECORDING_RATE = 8000;
     private final int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
@@ -38,6 +42,7 @@ public class VoiceService extends Service {
     private AudioRecord audioRecord;
     private Socket socket;
     private DataOutputStream dos;
+    private DataInputStream dis;
     private byte audioBuffer[];
     private int BUFFER_SIZE;
     private ConnectThread connectThread;
@@ -94,6 +99,11 @@ public class VoiceService extends Service {
 
             try {
                 dos.writeUTF("SendMsg " + BUFFER_SIZE);
+                String path = dis.readUTF();
+                if(path.startsWith("VoiceConnection")){
+
+                }
+                SERVER_UDP_PORT = 20003;
             } catch (Exception e) {
                 e.getStackTrace();
                 return;
@@ -121,6 +131,7 @@ public class VoiceService extends Service {
         try {
             socket = new Socket(SERVER_IP, SERVER_PORT);
             dos = new DataOutputStream(socket.getOutputStream());
+            dis = new DataInputStream(socket.getInputStream());
             inetSocketAddress = new InetSocketAddress(SERVER_IP, SERVER_UDP_PORT);
             datagramSocket = new DatagramSocket();
         } catch (Exception e) {
@@ -135,3 +146,4 @@ public class VoiceService extends Service {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDING_RATE, AUDIO_CHANNEL, AUDIO_FORMAT, BUFFER_SIZE);
     }
 }
+*/
