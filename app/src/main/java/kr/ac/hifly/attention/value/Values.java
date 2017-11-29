@@ -6,8 +6,10 @@ import android.media.AudioFormat;
  * Created by CYSN on 2017-11-22.
  */
 
+// 정수 interface
 public class Values {
-    public static final String TAG = "CYSN";
+
+    public static final String TAG = "KKKK";
     public static final String SERVER_IP = "223.194.156.168";
 
     public static final int SERVER_PORT = 10035;

@@ -22,7 +22,6 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
-
         }
 
         setFragment(new MainFragment());

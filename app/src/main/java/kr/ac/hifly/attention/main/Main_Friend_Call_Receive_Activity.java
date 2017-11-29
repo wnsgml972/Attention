@@ -28,6 +28,7 @@ import kr.ac.hifly.attention.value.Values;
  */
 
 public class Main_Friend_Call_Receive_Activity extends AppCompatActivity implements View.OnClickListener {
+
     private FloatingActionButton call_refuseFab;
     private FloatingActionButton call_receiveFab;
 

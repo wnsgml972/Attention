@@ -12,10 +12,6 @@ import android.os.RemoteException;
 
 import hifly.ac.kr.attention.R;
 
-/**
- * Created by CYSN on 2017-11-14.
- */
-
 public class Call_Service extends Service {
     private Call_Thread callThread;
     private Messenger mRemote;

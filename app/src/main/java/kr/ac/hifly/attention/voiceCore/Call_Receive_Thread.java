@@ -13,9 +13,6 @@ import java.net.Socket;
 
 import kr.ac.hifly.attention.value.Values;
 
-/**
- * Created by CYSN on 2017-11-22.
- */
 
 public class Call_Receive_Thread extends Thread{
     private String connect_IP = "223.194.154.62";

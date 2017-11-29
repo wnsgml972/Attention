@@ -25,9 +25,6 @@ import java.nio.ByteOrder;
 
 import hifly.ac.kr.attention.R;
 
-/**
- * Created by CYSN on 2017-11-14.
- */
 
 public class VoiceTest extends AppCompatActivity {
     private final String TAG = "KKKK";

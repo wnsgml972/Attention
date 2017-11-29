@@ -19,10 +19,6 @@ import kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity;
 import kr.ac.hifly.attention.value.Values;
 import kr.ac.hifly.attention.voiceCore.Call_Receive_Thread;
 
-/**
- * Created by CYSN on 2017-11-14.
- */
-
 public class MessageService extends Service {
     private Socket socket;
     private DataInputStream dis;

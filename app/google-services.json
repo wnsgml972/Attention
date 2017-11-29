@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "484824978961",
+    "firebase_url": "https://attention-469ab.firebaseio.com",
+    "project_id": "attention-469ab",
+    "storage_bucket": "attention-469ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484824978961:android:da95d613cb2429b0",
+        "android_client_info": {
+          "package_name": "hifly.ac.kr.attention"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484824978961-hk1c3le8hv7bke2ar92bued2dko41nev.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hifly.ac.kr.attention",
+            "certificate_hash": "f7e344ad40fd1016953da1daf42e990446c949fb"
+          }
+        },
+        {
+          "client_id": "484824978961-68pkoglhkflnqfaneed4o9guaurctu6h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlBIdFsa7NRrPmHA-Q9zUaMW4ANi4xmA4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484824978961-68pkoglhkflnqfaneed4o9guaurctu6h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

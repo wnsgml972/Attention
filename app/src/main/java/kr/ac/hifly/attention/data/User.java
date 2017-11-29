@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 import hifly.ac.kr.attention.R;
 
-/**
- * Created by CYSN on 2017-11-09.
- */
+
 
 public class User implements Serializable{
     private int icon;

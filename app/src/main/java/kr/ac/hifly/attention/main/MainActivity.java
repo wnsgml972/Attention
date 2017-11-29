@@ -31,6 +31,7 @@ import kr.ac.hifly.attention.data.VoiceTest;
 import kr.ac.hifly.attention.messageCore.MessageService;
 
 public class MainActivity extends AppCompatActivity {
+
     private final MyHandler mHandler = new MyHandler(this);
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -39,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private Main_Friend_Fragment mainFragment3 = new Main_Friend_Fragment();
     private Button voiceBtn;
 
-    private Intent serviceIntent;
-    private Messenger messenger;
-    private ServiceConnection connection = new ServiceConnection() {
+    private Intent serviceIntent;   //@@
+    private Messenger messenger;    //@@
+    private ServiceConnection connection = new ServiceConnection() {            //@@
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             messenger = new Messenger(service);
@@ -104,18 +105,18 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public class PageAdapter extends FragmentPagerAdapter {
-        public PageAdapter(FragmentManager manager){
-            super(manager);
-        }
+                public class PageAdapter extends FragmentPagerAdapter {
+                    public PageAdapter(FragmentManager manager){
+                        super(manager);
+                    }
 
-        @Override
-        public android.support.v4.app.Fragment getItem(int position) {
-            switch (position){
-                case 0:
-                    return mainFragment;
-                case 1:
-                    return mainFragment2;
+                    @Override
+                    public android.support.v4.app.Fragment getItem(int position) {
+                        switch (position){
+                            case 0:
+                                return mainFragment;
+                            case 1:
+                                return mainFragment2;
                 case 2:
                     return mainFragment3;
                 default:
@@ -128,11 +129,11 @@ public class MainActivity extends AppCompatActivity {
             return 3;
         }
     }
+
     private void initViewPager() {
         viewPager = (ViewPager) findViewById(R.id.main_frame_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabLayout);
         voiceBtn = (Button) findViewById(R.id.voiceBtn);
-
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
@@ -143,8 +144,10 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.people);
         tabLayout.getTabAt(1).setIcon(R.drawable.chat);
         tabLayout.getTabAt(2).setIcon(R.drawable.emsy);
+
         int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);
         int unSelectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Gray);
+
         tabLayout.getTabAt(0).getIcon().setColorFilter(selectedColor, PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(unSelectedColor, PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(unSelectedColor, PorterDuff.Mode.SRC_IN);
@@ -172,13 +175,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, VoiceTest.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-        overridePendingTransition(0,0);
+        overridePendingTransition(0,0); //@@
 
     }
 
 
 
-    // 핸들러 객체 만들기
+    // 핸들러 객체 만들기  @@
     public static class MyHandler extends Handler {
         public static final int CHANGE_FRIEND_INFO = 1;
         public static final int SAY_BYE = 0;

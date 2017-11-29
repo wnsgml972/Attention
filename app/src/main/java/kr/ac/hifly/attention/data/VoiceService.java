@@ -21,9 +21,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 */
-/**
- * Created by CYSN on 2017-11-19.
- *//*
+/*
 
 
 public class VoiceService extends Service {
