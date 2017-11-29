@@ -32,7 +32,7 @@
         </activity>
         <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Call_Activity">
         </activity>
-        <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity">
+        <activity android:name="kr.ac.hifly.attention.adapter.Main_Friend_Call_Receive_Activity">
         </activity>
         <activity android:name="kr.ac.hifly.attention.main.Main_Friend_Message_Activity">
         </activity>

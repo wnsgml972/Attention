@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.IBinder;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initViewPager();
 
         serviceIntent = new Intent(this, MessageService.class);
@@ -103,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+    private String getUUID(){
+        SharedPreferences preferences = getSharedPreferences("uuid",MODE_PRIVATE);
+        return preferences.getString("uuid", null);
     }
 
                 public class PageAdapter extends FragmentPagerAdapter {

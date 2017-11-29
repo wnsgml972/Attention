@@ -1,4 +1,4 @@
-package kr.ac.hifly.attention.main;
+package kr.ac.hifly.attention.adapter;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import hifly.ac.kr.attention.R;
@@ -106,6 +108,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
             } catch (Exception e) {
                 e.getStackTrace();
             }
+            onBackPressed();
 
         } else if (view == call_receiveFab) {//call receive
             message.what = Values.RECEIVE_CALL;
@@ -115,6 +118,16 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
             } catch (Exception e) {
                 e.getStackTrace();
             }
+            call_receiveFab.setVisibility(View.GONE);
+            TranslateAnimation ani = new TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.0f,
+                    Animation.RELATIVE_TO_SELF, 0.0f);
+            ani.setFillAfter(true); // 애니메이션 후 이동한좌표에
+            ani.setDuration(1000); //지속시간
+            call_refuseFab.startAnimation(ani);
+
         }
     }
 

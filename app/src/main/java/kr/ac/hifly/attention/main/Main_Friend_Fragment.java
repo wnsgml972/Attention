@@ -39,10 +39,10 @@ public class Main_Friend_Fragment extends Fragment {
 
         Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext(),handler);
         adapter.addUser(null);
-        adapter.addUser(new User(0, "최용석", "좋은 하루~"));
+        adapter.addUser(new User(0, "최용석", "좋은 하루~","5b2fecb7ab1149288fd18618220a2ed3"));
         adapter.addUser(null);
         for(int i=0; i<10; i++) {
-            adapter.addUser(new User(0, "최용석", "좋은 하루~"));
+            adapter.addUser(new User(0, "최용석--", "좋은 하루~"));
         }
         adapter.addUser(new User(0, "김준희", "오지구요 지리구요 고요고요 고요한밤이구요~"));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
