@@ -1,4 +1,4 @@
-package kr.ac.hifly.attention.adapter;
+package kr.ac.hifly.attention.main;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,9 +25,6 @@ import kr.ac.hifly.attention.messageCore.MessageService;
 import kr.ac.hifly.attention.value.Values;
 
 
-/**
- * Created by CYSN on 2017-11-12.
- */
 
 public class Main_Friend_Call_Receive_Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,7 +33,9 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
 
     private TextView textView;
     private MediaPlayer mp;
+
     private Messenger messenger;
+
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -127,7 +126,6 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
             ani.setFillAfter(true); // 애니메이션 후 이동한좌표에
             ani.setDuration(1000); //지속시간
             call_refuseFab.startAnimation(ani);
-
         }
     }
 

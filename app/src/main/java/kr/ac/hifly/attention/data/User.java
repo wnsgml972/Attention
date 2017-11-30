@@ -8,11 +8,14 @@ import hifly.ac.kr.attention.R;
 
 
 public class User implements Serializable {
+
     private int icon;
-
-
     private String uuid;//유저간 고유 ID
     private String name;
+
+
+
+    private String tel;
     private String stateMessage;
     private ArrayList<String> friends;
 
@@ -35,7 +38,13 @@ public class User implements Serializable {
         this.stateMessage = stateMessage;
         friends = new ArrayList<>();
     }
+    public String getTel() {
+        return tel;
+    }
 
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
     public int getIcon() {
         return icon;
     }

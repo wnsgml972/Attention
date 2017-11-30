@@ -1,4 +1,4 @@
-package kr.ac.hifly.attention.main;
+package kr.ac.hifly.attention.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
