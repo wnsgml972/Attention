@@ -1,19 +1,24 @@
 package kr.ac.hifly.attention.main;
 
 
+import android.Manifest;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -21,39 +26,53 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.data.User;
 import kr.ac.hifly.attention.data.VoiceTest;
 import kr.ac.hifly.attention.messageCore.MessageService;
+import kr.ac.hifly.attention.value.Values;
 
 public class MainActivity extends AppCompatActivity {
 
     private final MyHandler mHandler = new MyHandler(this);
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
-    private Main_Friend_Fragment mainFragment2 = new Main_Friend_Fragment();
-    private Main_Friend_Fragment mainFragment3 = new Main_Friend_Fragment();
+    private static Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
+    private static Main_Friend_Fragment mainFragment2 = new Main_Friend_Fragment();
+    private static Main_Friend_Fragment mainFragment3 = new Main_Friend_Fragment();
     private Button voiceBtn;
-
+    private String myUUID;
     private Intent serviceIntent;   //@@
     private Messenger messenger;    //@@
+    public static ArrayList<User> users = new ArrayList<>();
     private ServiceConnection connection = new ServiceConnection() {            //@@
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             messenger = new Messenger(service);
-            if(messenger != null){
+            if (messenger != null) {
                 Message message = new Message();
                 message.what = 0;
                 message.obj = new Messenger(new RemoteHandler());
                 try {
                     messenger.send(message);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.getStackTrace();
                 }
             }
@@ -64,11 +83,12 @@ public class MainActivity extends AppCompatActivity {
             messenger = null;
         }
     };
+
     private class RemoteHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
-            switch(msg.what){
+            switch (msg.what) {
                 case 0:
                     break;
                 case 1:
@@ -78,21 +98,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void testSend(){
+
+    public void testSend() {
         Message message = new Message();
         message.what = 1;
         message.obj = "ff";
         //messenger.send(message);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        myUUID = getSharedPreferences(Values.userInfo,Context.MODE_PRIVATE).getString(Values.userUUID,null);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
+        }
         initViewPager();
 
         serviceIntent = new Intent(this, MessageService.class);
+
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
+
         startService(serviceIntent);
     }
 
@@ -106,23 +133,19 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
-    private String getUUID(){
-        SharedPreferences preferences = getSharedPreferences("uuid",MODE_PRIVATE);
-        return preferences.getString("uuid", null);
-    }
 
-                public class PageAdapter extends FragmentPagerAdapter {
-                    public PageAdapter(FragmentManager manager){
-                        super(manager);
-                    }
+    public class PageAdapter extends FragmentPagerAdapter {
+        public PageAdapter(FragmentManager manager) {
+            super(manager);
+        }
 
-                    @Override
-                    public android.support.v4.app.Fragment getItem(int position) {
-                        switch (position){
-                            case 0:
-                                return mainFragment;
-                            case 1:
-                                return mainFragment2;
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return mainFragment;
+                case 1:
+                    return mainFragment2;
                 case 2:
                     return mainFragment3;
                 default:
@@ -177,14 +200,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void voiceActivity(View v){
-        Intent intent = new Intent(this, VoiceTest.class);
+
+    public void voiceActivity(View v) {
+/*        Intent intent = new Intent(this, VoiceTest.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-        overridePendingTransition(0,0); //@@
+        overridePendingTransition(0, 0); //@@*/
+        getSynchronizePhone();
 
     }
-
 
 
     // 핸들러 객체 만들기  @@
@@ -199,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
             mWeakActivity = new WeakReference<MainActivity>(activtiy);
 
         }
+
         @Override
         public void handleMessage(Message msg) {
             int message = msg.getData().getInt("message");
@@ -219,4 +244,104 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void getSynchronizePhone() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReference();
+                String[] arrProjection = {
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.Contacts.DISPLAY_NAME
+                };
+
+                String[] arrPhoneProjection = {
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                };
+
+// get user list
+                Cursor clsCursor = getApplicationContext().getContentResolver().query(
+                        ContactsContract.Contacts.CONTENT_URI,
+                        arrProjection,
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER + "=1",
+                        null, null
+                );
+
+
+                while (clsCursor.moveToNext()) {
+                    String telid = null;
+                    String name = null;
+                    String tel = null;
+                    telid = clsCursor.getString(0);
+                    name = clsCursor.getString(1);
+
+                    String strContactId = clsCursor.getString(0);
+                    Cursor clsPhoneCursor = getApplicationContext().getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            arrPhoneProjection,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + strContactId,
+                            null, null
+                    );
+                    while (clsPhoneCursor.moveToNext()) {
+                        tel = clsPhoneCursor.getString(0);
+                    }
+                    Log.d("Unity", "연락처 사용자 ID : " + telid);
+                    Log.d("Unity", "연락처 사용자 이름 : " + name);
+                    Log.d("Unity", "연락처 사용자 폰번호 : " + tel);
+                    databaseReference.child("user").orderByChild("tel").equalTo(tel).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s){
+                            String name = dataSnapshot.child("name").getValue(String.class);
+                            String state = dataSnapshot.child("state").getValue(String.class);
+                            String uuid = dataSnapshot.getKey();
+                            Log.i(Values.TAG,name + " " + state + " " + uuid);
+                            if(uuid != myUUID) {
+                                users.add(new User(0, name, state, uuid));
+                                mainFragment.refresh();
+                            }
+                            /*
+                            Query query = databaseReference.child("user").child(databaseReference.getKey());
+                            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    dataSnapshot.child("").getValue()
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });*/
+
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    clsPhoneCursor.close();
+
+                }
+                clsCursor.close();
+            }
+        }).start();
+    }
 }

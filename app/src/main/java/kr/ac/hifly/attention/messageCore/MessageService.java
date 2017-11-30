@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,18 +15,22 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.UUID;
 
-import kr.ac.hifly.attention.adapter.Main_Friend_Call_Receive_Activity;
+import kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity;
 import kr.ac.hifly.attention.value.Values;
 import kr.ac.hifly.attention.voiceCore.Call_Receive_Thread;
 
 public class MessageService extends Service {
-    private Socket socket;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
     private ReceiveThread receiveThread;
     private Messenger mRemote;
     private boolean isCalling = false;
@@ -51,7 +56,6 @@ public class MessageService extends Service {
     }
 
     public void screenOn() {
-
 
         if (sCpuWakeLock != null) {
             return;
@@ -85,13 +89,11 @@ public class MessageService extends Service {
                     break;
                 case Values.REFUSE_CALL:
                     message = (String) msg.obj;
-                    receiveThread.sendMessage(message);
                     break;
                 case Values.RECEIVE_CALL:
                     message = (String) msg.obj;
                     if (!isCalling) {
                         isCalling = true;
-                        receiveThread.sendMessage(message);
                         screenOn();
                         Call_Receive_Thread call_receive_thread = new Call_Receive_Thread();
                         call_receive_thread.start();
@@ -110,6 +112,8 @@ public class MessageService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
         if (receiveThread == null) {
             receiveThread = new ReceiveThread();
             receiveThread.start();
@@ -122,21 +126,6 @@ public class MessageService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(1, new Notification());
 
-        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-
-            notification = new Notification.Builder(getApplicationContext())
-                    .setContentTitle("")
-                    .setContentText("")
-                    .build();
-
-
-            nm.notify(startId, notification);
-            nm.cancel(startId);
-        }
-
         return START_STICKY;
     }
 
@@ -148,19 +137,18 @@ public class MessageService extends Service {
     }
 
     class ReceiveThread extends Thread {
-        public void run() {
+        public void run()  {
             try {
-                socket = new Socket(Values.SERVER_IP, Values.SERVER_PORT);
-                dis = new DataInputStream(socket.getInputStream());
-                dos = new DataOutputStream(socket.getOutputStream());
-                dos.writeUTF("sendName " + "yongseok" + " 5b2fecb7ab1149288fd18618220a2ed3");//내 이름과 내 uuid를 전송
+
+
+                //databaseReference.child("");
             } catch (Exception e) {
                 e.getStackTrace();
                 return;
             }
             while (true) {
                 try {
-                    String message = dis.readUTF();
+                    String message=null;
                     if (message.startsWith("callToMe")) {
                         String messages[] = message.split(" ");//1 : name 2: ip
                         Intent intent = new Intent(getApplicationContext(), Main_Friend_Call_Receive_Activity.class);
@@ -177,15 +165,5 @@ public class MessageService extends Service {
                 }
             }
         }
-
-        public void sendMessage(String msg) {
-            try {
-                if (dos != null)
-                    dos.writeUTF(msg);
-            } catch (Exception e) {
-                e.getStackTrace();
-            }
-        }
-
     }
 }

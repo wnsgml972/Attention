@@ -1,4 +1,5 @@
 /*
+
 package hifly.ac.kr.attention;
 
 import android.app.NotificationManager;
@@ -20,8 +21,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-*/
-/*
+
+
 
 
 public class VoiceService extends Service {
@@ -144,4 +145,5 @@ public class VoiceService extends Service {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDING_RATE, AUDIO_CHANNEL, AUDIO_FORMAT, BUFFER_SIZE);
     }
 }
+
 */

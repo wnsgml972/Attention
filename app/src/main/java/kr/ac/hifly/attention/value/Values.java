@@ -12,6 +12,12 @@ public class Values {
     public static final String TAG = "KKKK";
     public static final String SERVER_IP = "223.194.156.168";
 
+    public static final String userInfo = "userInfo";
+    public static final String userUUID = "uuid";
+    public static final String userName = "name";
+    public static final String userTel = "tel";
+
+
     public static final int SERVER_PORT = 10035;
     public static int SERVER_UDP_PORT = 10036;
     public static final int RECORDING_RATE = 44100;

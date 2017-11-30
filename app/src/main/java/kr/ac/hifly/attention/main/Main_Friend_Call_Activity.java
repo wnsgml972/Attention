@@ -25,6 +25,7 @@ import kr.ac.hifly.attention.voiceCore.Call_Service;
  */
 
 public class Main_Friend_Call_Activity extends AppCompatActivity implements View.OnClickListener {
+
     private FloatingActionButton call_endFab;
     private SoundPool sound;
     private int soundId;
@@ -35,7 +36,9 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
     private Intent intent;
 
     private Messenger messenger;
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
+
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             messenger = new Messenger(service);
@@ -78,6 +81,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
         textView = (TextView) findViewById(R.id.main_friend_call_textview);
         call_endFab = (FloatingActionButton) findViewById(R.id.main_friend_call_end_fab);
         user = (User)getIntent().getSerializableExtra("object");
+
         if(user != null){
             textView.setText(user.getName() + "에게 전화 거는중...");
         }
