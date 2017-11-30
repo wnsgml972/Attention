@@ -28,9 +28,6 @@ import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.value.Values;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MainFragment extends Fragment {
 
     private Animation animation;

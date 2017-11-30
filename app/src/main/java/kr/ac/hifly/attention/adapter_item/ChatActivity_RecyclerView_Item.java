@@ -7,8 +7,12 @@ public class ChatActivity_RecyclerView_Item {
     private String chat_content;
     private String time;
     private int itemViewType;
+
+    //빈 생성자 파이어베이스에 데이터 넣기 전에 꼭 필요!
     public ChatActivity_RecyclerView_Item() {
+
     }
+    
     public ChatActivity_RecyclerView_Item(String chat_name, String chat_content, String time, int itemViewType) {
         this.chat_name = chat_name;
         this.chat_content = chat_content;

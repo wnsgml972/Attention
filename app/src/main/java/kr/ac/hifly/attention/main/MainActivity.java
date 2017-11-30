@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private static Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
-    private static Main_Friend_Fragment mainFragment2 = new Main_Friend_Fragment();
-    private static Main_Friend_Fragment mainFragment3 = new Main_Friend_Fragment();
+    private static Main_Chat_Room_Fragment mainFragment2 = new Main_Chat_Room_Fragment();
+    private static Main_Configuration_Fragment mainFragment3 = new Main_Configuration_Fragment();
     private Button voiceBtn;
     private String myUUID;
     private Intent serviceIntent;   //@@
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         Message message = new Message();
         message.what = 1;
         message.obj = "ff";
+
         //messenger.send(message);
     }
 
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myUUID = getSharedPreferences(Values.userInfo,Context.MODE_PRIVATE).getString(Values.userUUID,null);
+        myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, null);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
         }
@@ -291,12 +292,12 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Unity", "연락처 사용자 폰번호 : " + tel);
                     databaseReference.child("user").orderByChild("tel").equalTo(tel).addChildEventListener(new ChildEventListener() {
                         @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s){
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             String name = dataSnapshot.child("name").getValue(String.class);
                             String state = dataSnapshot.child("state").getValue(String.class);
                             String uuid = dataSnapshot.getKey();
-                            Log.i(Values.TAG,name + " " + state + " " + uuid);
-                            if(uuid != myUUID) {
+                            Log.i(Values.TAG, name + " " + state + " " + uuid);
+                            if (uuid != myUUID) {
                                 users.add(new User(0, name, state, uuid));
                                 mainFragment.refresh();
                             }

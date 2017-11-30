@@ -36,4 +36,5 @@ public class Values {
     public static final String RECEIVE = "receive";
     public static final int END_CALL = 3;
 
+    public static String SetProfilePhoto= "profile_photo";
 }
