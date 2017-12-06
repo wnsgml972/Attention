@@ -36,6 +36,7 @@ public class ChatActivity_RecyclerView_Adapter extends RecyclerView.Adapter<Recy
         //holder.chat_name.setText(list.get(position).getChat_name());
         holder.chat_content.setText(list.get(position).getChat_content());
     }
+
 */
 
     @Override
