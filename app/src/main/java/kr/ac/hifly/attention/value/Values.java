@@ -17,6 +17,15 @@ public class Values {
     public static final String userName = "name";
     public static final String userTel = "tel";
 
+    public static final String USER = "user";
+    public static final String VOICE = "voice";
+    public static final String VOICE_ROOM = "voice_room";
+    public static final String VOICE_ROOM_FIRST = "voice_";
+    public static final String VOICE_CALLER = "voice_caller";
+    public static final String VOICE_CALLER_NAME = "voice_caller_name";
+
+    public static final String VOICE_CALL_STATE = "call_state";
+
 
     public static final int SERVER_PORT = 10035;
     public static int SERVER_UDP_PORT = 10036;
@@ -35,6 +44,8 @@ public class Values {
     public static final int RECEIVE_CALL = 2;
     public static final String RECEIVE = "receive";
     public static final int END_CALL = 3;
+    public static final String END = "end";
+    public static final String CALLING = "calling";
 
     public static String SetProfilePhoto= "profile_photo";
 }

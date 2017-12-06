@@ -15,14 +15,21 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import kr.ac.hifly.attention.data.Call;
+import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.main.MainActivity;
 import kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity;
 import kr.ac.hifly.attention.value.Values;
 import kr.ac.hifly.attention.voiceCore.Call_Receive_Thread;
@@ -34,7 +41,10 @@ public class MessageService extends Service {
     private ReceiveThread receiveThread;
     private Messenger mRemote;
     private boolean isCalling = false;
+    private boolean isFirst = true;
+    private String voiceRoomName;
     private static PowerManager.WakeLock sCpuWakeLock;
+    private String myUUID;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -88,12 +98,17 @@ public class MessageService extends Service {
                     mRemote = (Messenger) msg.obj;
                     break;
                 case Values.REFUSE_CALL:
+                    databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).child(Values.VOICE).setValue("null");
+                    databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).child(Values.VOICE_CALLER).setValue("null");
+                    databaseReference.child(Values.VOICE_ROOM).child(voiceRoomName).child(myUUID).child(Values.VOICE_CALL_STATE).setValue(Values.REFUSE);
                     message = (String) msg.obj;
+                    isCalling = false;
                     break;
                 case Values.RECEIVE_CALL:
                     message = (String) msg.obj;
                     if (!isCalling) {
                         isCalling = true;
+                        databaseReference.child(Values.VOICE_ROOM).child(voiceRoomName).child(myUUID).child(Values.VOICE_CALL_STATE).setValue(Values.RECEIVE);
                         screenOn();
                         Call_Receive_Thread call_receive_thread = new Call_Receive_Thread();
                         call_receive_thread.start();
@@ -101,6 +116,10 @@ public class MessageService extends Service {
                     break;
                 case Values.END_CALL:
                     isCalling = false;
+                    if (voiceRoomName != null && !voiceRoomName.equals("null")) {
+                        databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).removeValue();
+                        databaseReference.child(Values.VOICE_ROOM).child(voiceRoomName).child(myUUID).removeValue();
+                    }
                     break;
                 default:
                     remoteSendMessage("TEST");
@@ -114,6 +133,7 @@ public class MessageService extends Service {
         super.onCreate();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+        myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
         if (receiveThread == null) {
             receiveThread = new ReceiveThread();
             receiveThread.start();
@@ -137,16 +157,60 @@ public class MessageService extends Service {
     }
 
     class ReceiveThread extends Thread {
-        public void run()  {
+        public void run() {
             try {
+                if (!myUUID.equals(null)) {
+                    databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).child(Values.VOICE_ROOM).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            voiceRoomName = dataSnapshot.getValue(String.class);
+                            if (voiceRoomName != null)
+                                Log.i(Values.TAG, voiceRoomName + " " + dataSnapshot.getKey() + "@@@@@@@@@" + databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).getKey() + " " + databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).child(Values.VOICE_CALLER).getKey());
+                            if (voiceRoomName != null && !voiceRoomName.equals("null")) {//not doing voice chat;
+                                databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).child(Values.VOICE_CALLER).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String caller = dataSnapshot.getValue(String.class);
+                                        Log.i(Values.TAG,"들어옴!!!");
+                                        if (caller != null)
+                                            Log.i(Values.TAG, caller + " " + dataSnapshot.getKey() + "@@@@@@@@@");
+                                        if (caller != null && !caller.equals("null")) {
+                                            ArrayList<User> users =  MainActivity.users;
+                                            for(int i=0; i< users.size(); i++){
+                                                if(users.get(i).getUuid().equals(caller)){
+                                                    Intent intent = new Intent(getApplicationContext(), Main_Friend_Call_Receive_Activity.class);
+                                                    intent.putExtra("name", users.get(i).getName());
+                                                    Log.i(Values.TAG, "name : " + users.get(i).getName());
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(intent);
+                                                    return;
+                                                }
+                                            }
 
+                                        }
+                                    }
 
-                //databaseReference.child("");
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             } catch (Exception e) {
                 e.getStackTrace();
                 return;
             }
-            while (true) {
+           /* while (true) {
                 try {
                     String message=null;
                     if (message.startsWith("callToMe")) {
@@ -163,7 +227,7 @@ public class MessageService extends Service {
                 } catch (Exception e) {
                     return;
                 }
-            }
+            }*/
         }
     }
 }

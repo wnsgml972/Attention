@@ -13,11 +13,23 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.net.Socket;
+import java.util.UUID;
+
 import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.data.Call;
 import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.value.Values;
 import kr.ac.hifly.attention.voiceCore.Call_Service;
 
 /**
@@ -36,6 +48,10 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
     private Intent intent;
 
     private Messenger messenger;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private String myUUID;
+    private String uname;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -81,6 +97,51 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
         textView = (TextView) findViewById(R.id.main_friend_call_textview);
         call_endFab = (FloatingActionButton) findViewById(R.id.main_friend_call_end_fab);
         user = (User)getIntent().getSerializableExtra("object");
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        myUUID = getSharedPreferences(Values.userInfo,Context.MODE_PRIVATE).getString(Values.userUUID,"null");
+        uname = getSharedPreferences(Values.userInfo,Context.MODE_PRIVATE).getString(Values.userName,"null");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket("www.google.com", 80);
+                    String ipAddress = socket.getLocalAddress().toString();
+                    ipAddress = ipAddress.substring(1);
+                    Call call = new Call(myUUID,Values.CALLING,uname,ipAddress);
+
+
+                    databaseReference = firebaseDatabase.getReference();
+                    String randomUUID = UUID.randomUUID().toString().replace("-","");
+                    databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE).child(Values.VOICE_ROOM).setValue(Values.VOICE_ROOM_FIRST+randomUUID);
+                    databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE).child(Values.VOICE_CALLER).setValue(myUUID);
+                    databaseReference.child(Values.VOICE).child(Values.VOICE_ROOM_FIRST+randomUUID).child(myUUID).setValue(call);
+                    databaseReference.child(Values.VOICE_ROOM).child(Values.VOICE_ROOM_FIRST+randomUUID).child(myUUID).child(Values.VOICE_CALL_STATE).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String value = dataSnapshot.getValue(String.class);
+                            if (value != null) {
+                                if (value.equals(Values.RECEIVE)) {//receive로 바꾸는건 반대쪽 클라이언트가 바꿈
+                                    Log.i(Values.TAG, "RECEIVE!!");
+                                    //send voice data
+                                } else if (value.equals(Values.REFUSE)) {// END는 누구나 바꿀수 있고 바꾸면 양쪽다 종료
+                                    Log.i(Values.TAG, "REFUSE!!");
+                                } else if (value.equals(Values.END)) {// END는 누구나 바꿀수 있고 바꾸면 양쪽다 종료
+                                    Log.i(Values.TAG, "END!!");
+                                    //stop voice data
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.i("ERROR", e.getMessage());
+                }
+            }
+        }).start();
 
         if(user != null){
             textView.setText(user.getName() + "에게 전화 거는중...");
@@ -90,9 +151,20 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         startService(intent);
     }
+/*    class CallStateListener implements ValueEventListener{
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
 
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    }*/
     @Override
     public void onClick(View view) {
+        databaseReference.child("VoiceRoom").child("voice_" + user.getUuid()).child("callState").setValue(Values.END);
         if(view == call_endFab){
             onBackPressed();
         }

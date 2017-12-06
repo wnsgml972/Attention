@@ -19,6 +19,9 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.data.User;
 import kr.ac.hifly.attention.messageCore.MessageService;
@@ -30,11 +33,12 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
 
     private FloatingActionButton call_refuseFab;
     private FloatingActionButton call_receiveFab;
-
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
     private TextView textView;
     private MediaPlayer mp;
-
     private Messenger messenger;
+    private boolean isCalling = false;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -80,10 +84,9 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
 
-
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
         String name = getIntent().getStringExtra("name");
-        String ip = getIntent().getStringExtra("ip");
-
         textView = (TextView) findViewById(R.id.main_friend_call_receive_textview);
         call_refuseFab = (FloatingActionButton) findViewById(R.id.main_friend_call_refuse_fab);
         call_receiveFab = (FloatingActionButton) findViewById(R.id.main_friend_call_receive_fab);
@@ -100,14 +103,26 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
         Message message = new Message();
 
         if (view == call_refuseFab) {//call refuse
-            message.what = Values.REFUSE_CALL;
-            message.obj = Values.REFUSE;
-            try {
-                messenger.send(message);
-            } catch (Exception e) {
-                e.getStackTrace();
+            if(isCalling) {
+                message.what = Values.END_CALL;
+                message.obj = Values.END;
+                try {
+                    messenger.send(message);
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+                onBackPressed();
             }
-            onBackPressed();
+            else{
+                message.what = Values.REFUSE_CALL;
+                message.obj = Values.REFUSE;
+                try {
+                    messenger.send(message);
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+                onBackPressed();
+            }
 
         } else if (view == call_receiveFab) {//call receive
             message.what = Values.RECEIVE_CALL;
@@ -126,6 +141,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
             ani.setFillAfter(true); // 애니메이션 후 이동한좌표에
             ani.setDuration(1000); //지속시간
             call_refuseFab.startAnimation(ani);
+            isCalling = true;
         }
     }
 

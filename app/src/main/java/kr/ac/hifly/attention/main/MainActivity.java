@@ -62,9 +62,13 @@ public class MainActivity extends AppCompatActivity {
     private static Main_Configuration_Fragment mainFragment3 = new Main_Configuration_Fragment();
     private Button voiceBtn;
     private String myUUID;
+    private String myTel;
     private Intent serviceIntent;   //@@
     private Messenger messenger;    //@@
     public static ArrayList<User> users = new ArrayList<>();
+
+    private int count;
+    private int telSize;
     private ServiceConnection connection = new ServiceConnection() {            //@@
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, null);
+        myTel = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userTel, null);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
         }
@@ -234,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(0, 0); //@@*/
-        getSynchronizePhone();
+        getSynchronizePhone((Button)v);
 
     }
 
@@ -267,12 +272,14 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 default:
                     super.handleMessage(msg);
-
             }
         }
     }
 
-    public void getSynchronizePhone() {
+    public void getSynchronizePhone(final Button button) {
+        count = telSize = 0;
+        button.setClickable(false);
+        users.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -296,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
                         null, null
                 );
 
+                telSize = clsCursor.getCount();
 
                 while (clsCursor.moveToNext()) {
                     String telid = null;
@@ -314,33 +322,29 @@ public class MainActivity extends AppCompatActivity {
                     while (clsPhoneCursor.moveToNext()) {
                         tel = clsPhoneCursor.getString(0);
                     }
+                    tel = tel.replace("-","");
                     Log.d("Unity", "연락처 사용자 ID : " + telid);
                     Log.d("Unity", "연락처 사용자 이름 : " + name);
                     Log.d("Unity", "연락처 사용자 폰번호 : " + tel);
+                    count++;
+                    if(count >= telSize)
+                        button.setClickable(true);
+
                     databaseReference.child("user").orderByChild("tel").equalTo(tel).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             String name = dataSnapshot.child("name").getValue(String.class);
                             String state = dataSnapshot.child("state").getValue(String.class);
+                            String mtel = dataSnapshot.child("tel").getValue(String.class);
                             String uuid = dataSnapshot.getKey();
                             Log.i(Values.TAG, name + " " + state + " " + uuid);
-                            if (uuid != myUUID) {
+                            databaseReference.child("user").child(myUUID).child("friends").child(uuid).setValue("null");
+                            if (!uuid.equals(myUUID) && !myTel.equals(mtel)) {
                                 users.add(new User(0, name, state, uuid));
                                 mainFragment.refresh();
                             }
-                            /*
-                            Query query = databaseReference.child("user").child(databaseReference.getKey());
-                            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    dataSnapshot.child("").getValue()
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });*/
+                            Log.i(Values.TAG,telSize + " " + count + "!!!!!!!!!!!!!!!!!!");
 
                         }
 
@@ -364,9 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-
                     clsPhoneCursor.close();
-
                 }
                 clsCursor.close();
             }

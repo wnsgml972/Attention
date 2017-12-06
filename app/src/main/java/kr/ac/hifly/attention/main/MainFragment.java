@@ -32,7 +32,6 @@ public class MainFragment extends Fragment {
 
     private Animation animation;
     private Animation.AnimationListener animationListener;
-
     public MainFragment() {
 
     }

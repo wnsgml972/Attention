@@ -61,6 +61,8 @@ public class SettingActivity extends AppCompatActivity{
             editor.apply();
             databaseReference.child(uuid).child(Values.userName).setValue(editText.getText().toString());
             databaseReference.child(uuid).child("tel").setValue(myNumber);
+            databaseReference.child(uuid).child("state").setValue("만나서 반갑습니다. " + editText.getText().toString() + "입니다.");
+            databaseReference.child(uuid).child("voice").setValue("null");
             databaseReference.child(uuid).child(Values.userUUID).setValue(uuid);
         }
     }
