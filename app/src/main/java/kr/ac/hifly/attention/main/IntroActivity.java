@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.Window;
 
 import hifly.ac.kr.attention.R;
@@ -32,6 +34,7 @@ public class IntroActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
+
 
     public void setFragment(Fragment fragment) {
         FragmentManager fragmentManager = getFragmentManager();

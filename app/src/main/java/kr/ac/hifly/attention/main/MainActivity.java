@@ -27,6 +27,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout.getTabAt(0).setIcon(R.drawable.people);
         tabLayout.getTabAt(1).setIcon(R.drawable.chat);
-        tabLayout.getTabAt(2).setIcon(R.drawable.emsy);
+        tabLayout.getTabAt(2).setIcon(R.drawable.configure2);
 
         int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);
         int unSelectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Gray);
@@ -199,7 +202,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_subactivity:
+                startActivity(new Intent(this, Main_Configuration_Fragment.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void voiceActivity(View v) {

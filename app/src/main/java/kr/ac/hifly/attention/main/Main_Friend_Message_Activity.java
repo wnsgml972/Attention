@@ -51,8 +51,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
 
     private User user;
     private String chat_room = "";
-    private String myUuid = "5b2fecb7ab1149288fd18618220a2ed3";
-    private String yourUuid = "5b2fecb7ab1149288fd18618220a2ed6";
+    private String myUuid = "e9c5b4967c9048bfaf9d914a0df7269d";
+    private String yourUuid = "f3655456b98848a695f426f7d714903a";
     private int chat_room_flag  = 0;
 
     @Override

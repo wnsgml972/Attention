@@ -42,11 +42,26 @@
         </activity>
         <activity android:name="kr.ac.hifly.attention.data.VoiceTest"/>
 
+        <!--This is Dialog part-->
+        <activity android:name="kr.ac.hifly.attention.dialog.Main_Configure_Item_Qna_Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
+        <activity android:name="kr.ac.hifly.attention.dialog.Main_Configure_Item_Developer_Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
+        <activity android:name="kr.ac.hifly.attention.dialog.Main_Configure_Item_I_Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
+        <activity android:name="kr.ac.hifly.attention.dialog.Main_Configure_Item_Speaker_Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
+
         <!--This is service part-->
         <service android:name="kr.ac.hifly.attention.messageCore.MessageService"/>
         <service android:name="kr.ac.hifly.attention.voiceCore.Call_Service"/>
 
         <!--<service android:name=".VoiceService"/>-->
+
 
 
     </application>

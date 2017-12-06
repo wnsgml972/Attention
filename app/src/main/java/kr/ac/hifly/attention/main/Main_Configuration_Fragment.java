@@ -67,34 +67,8 @@ public class Main_Configuration_Fragment extends Fragment {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQEUST_OK) {
-            if (resultCode == Activity.RESULT_OK) {
-                Intent photo_intent = new Intent(Values.SetProfilePhoto);
 
-                Log.e("FOURTH_FRAGMENT_DATA",getImageNameToUri(data.getData()));
-                String real = getImageNameToUri(data.getData());
-                photo_intent.putExtra("ph", real);
-                getContext().sendBroadcast(photo_intent);
 
-                Picasso.with(getContext()).load(Uri.fromFile(new File(real))).transform(new CropCircleTransformation()).into(fourth_fragment_profile_Item_Image);
-            }
-        }
-    }
-
-    public String getImageNameToUri(Uri data)
-    {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader cursorLoader = new CursorLoader(getContext(),data,proj,null,null,null);
-        Cursor cursor = cursorLoader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        return cursor.getString(column_index);
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -102,12 +76,13 @@ public class Main_Configuration_Fragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        main_Configuration_RecyclerView_Items = new ArrayList<Main_Configuration_RecyclerView_Item>();
 
+        main_Configuration_RecyclerView_Items = new ArrayList<Main_Configuration_RecyclerView_Item>();
         main_Configuration_RecyclerView_Items.add(new Main_Configuration_RecyclerView_Item("공지사항", R.drawable.main_configuration_item_speaker));
         main_Configuration_RecyclerView_Items.add(new Main_Configuration_RecyclerView_Item("버전정보", R.drawable.main_configuration_item_i));
         main_Configuration_RecyclerView_Items.add(new Main_Configuration_RecyclerView_Item("도움말", R.drawable.main_configuration_item_qna));
         main_Configuration_RecyclerView_Items.add(new Main_Configuration_RecyclerView_Item("개발자", R.drawable.main_configuration_item_developer));
+        main_Configuration_RecyclerView_Items.add(new Main_Configuration_RecyclerView_Item("동기화", R.drawable.main_configuration_item_refresh));
 
         main_configuration_recyclerView_adapter = new Main_Configuration_RecyclerView_Adapter(getContext(), main_Configuration_RecyclerView_Items);
         fourth_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
