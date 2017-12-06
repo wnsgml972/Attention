@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout.getTabAt(0).setIcon(R.drawable.people);
         tabLayout.getTabAt(1).setIcon(R.drawable.chat);
-        tabLayout.getTabAt(2).setIcon(R.drawable.configure2);
+        tabLayout.getTabAt(2).setIcon(R.drawable.info);
 
         int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);
         int unSelectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Gray);

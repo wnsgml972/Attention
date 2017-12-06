@@ -48,10 +48,7 @@ public class Main_Friend_Fragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         refresh();
-     /*   for (int i = 0; i < 10; i++) {
-            adapter.addUser(new User(0, "최용석--", "좋은 하루~"));
-        }
-        adapter.addUser(new User(0, "김준희", "오지구요 지리구요 고요고요 고요한밤이구요~"));*/
+
 
     }
     public void refresh(){
@@ -64,7 +61,7 @@ public class Main_Friend_Fragment extends Fragment {
         ArrayList<User> users = MainActivity.users;
         for (int i = 0; i < users.size(); i++) {
             adapter.addUser(users.get(i));
-            //adapter.addUser(new User(0, "최용석--", "좋은 하루~"));
+
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerView.setAdapter(adapter);

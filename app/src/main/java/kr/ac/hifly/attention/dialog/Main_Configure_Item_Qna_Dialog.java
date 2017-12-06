@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,9 @@ public class Main_Configure_Item_Qna_Dialog extends AppCompatActivity {
     private List<Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item> main_configure_recyclerView_dialog_qna_adapter_items;
 
     private ImageButton imageButton;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(); //firebase 접속
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();  //firebase json tree 접근
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,8 @@ public class Main_Configure_Item_Qna_Dialog extends AppCompatActivity {
 
     private void setRecyclerView() {
         main_configure_recyclerView_dialog_qna_adapter_items = new ArrayList<Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item>();
+
+        databaseReference.child("");
 
         main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("1", "단축키가 궁금해요."));
         main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("2", "새소식은 어떤 기능인가요?"));
