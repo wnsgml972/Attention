@@ -35,7 +35,9 @@ public class ChatActivity_RecyclerView_Adapter extends RecyclerView.Adapter<Recy
     public void onBindViewHolder(ViewHolder holder, int position) {
         //holder.chat_name.setText(list.get(position).getChat_name());
         holder.chat_content.setText(list.get(position).getChat_content());
-    }*/
+    }
+
+*/
 
     @Override
     public int getItemViewType(int position) {
