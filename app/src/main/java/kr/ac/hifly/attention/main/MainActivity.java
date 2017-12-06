@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.people);
-        tabLayout.getTabAt(1).setIcon(R.drawable.chat);
+        tabLayout.getTabAt(1).setIcon(R.drawable.sungwon_message);
         tabLayout.getTabAt(2).setIcon(R.drawable.info);
 
         int selectedColor = ContextCompat.getColor(getApplicationContext(), R.color.color_Black);

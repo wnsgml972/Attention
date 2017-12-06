@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/color_main"
+        android:gravity="right"
         >
         <ImageButton
             android:id="@+id/toolbar_item_configure"
@@ -32,6 +33,7 @@
             android:textColor="@color/color_Black"
             android:textSize="17sp"
             android:textStyle="bold" />
+
     </android.support.v7.widget.Toolbar>
     <LinearLayout
         android:id="@+id/main_drawer_container"

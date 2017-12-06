@@ -58,28 +58,25 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:orientation="vertical">
-
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/main_friend_info_call_fab"
+                        android:id="@+id/main_friend_info_message_fab"
                         app:fabSize="mini"
                         android:layout_width="wrap_content"
-                        android:layout_gravity="right"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="135dp"
+                        android:backgroundTint="@color/color_Lite_Gray"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/call"
-                        android:onClick="call"
-                        android:backgroundTint="#93b3f4"
-                        app:borderWidth="0dp" />
-
+                        android:src="@drawable/sungwon_message"
+                        app:borderWidth="0dp"
+                        android:onClick="message"
+                        />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="30dp"
-                        android:text="call" />
+                        android:layout_marginLeft="130dp"
+                        android:text="message" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -89,23 +86,26 @@
                     android:orientation="vertical">
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/main_friend_info_message_fab"
+                        android:id="@+id/main_friend_info_call_fab"
                         app:fabSize="mini"
                         android:layout_width="wrap_content"
+                        android:layout_gravity="left"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:backgroundTint="#93b3f4"
+                        android:layout_marginRight="20dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/message"
-                        app:borderWidth="0dp"
-                        android:onClick="message"
-                        />
+                        android:src="@drawable/call"
+                        android:onClick="call"
+                        android:backgroundTint="@color/color_Lite_Gray"
+                        app:borderWidth="0dp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="message" />
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="30dp"
+                        android:text="call" />
                 </LinearLayout>
 
             </LinearLayout>
