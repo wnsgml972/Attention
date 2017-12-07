@@ -24,11 +24,12 @@ public class Values {
     public static final String VOICE_ROOM_FIRST = "voice_";
     public static final String VOICE_CALLER = "voice_caller";
     public static final String VOICE_USER_IP = "voice_user_ip";
+    public static final String VOICE_USER_PORT = "voice_user_port";
 
     public static final String VOICE_CALL_STATE = "call_state";
 
 
-    public static final int SERVER_PORT = 10035;
+    public static final int CALLER_SEND_PORT = 10035;
     public static int SERVER_UDP_PORT = 10036;
     public static final int RECORDING_RATE = 44100;
     //private final int RECORDING_RATE = 8000;
@@ -50,5 +51,6 @@ public class Values {
     public static final String CALLING = "calling";
     public static final int CHAT_ROOM = 5;
 
+    public static String myUUID;
     public static String SetProfilePhoto= "profile_photo";
 }

@@ -16,16 +16,16 @@ import kr.ac.hifly.attention.value.Values;
 
 public class Call_Thread extends Thread{
     private String connect_IP;
+    private int connect_PORT;
     private InetSocketAddress inetSocketAddress;
     private DatagramSocket datagramSocket;
     private AudioRecord audioRecord;
     private byte audioBuffer[];
     private int BUFFER_SIZE;
     int count=0;
-    public Call_Thread(String userIP){
+    public Call_Thread(String userIP,int userPort){
         this.connect_IP = userIP;
-        Call_Receive_Thread call_receive_thread = new Call_Receive_Thread(userIP);
-        call_receive_thread.start();
+        this.connect_PORT = userPort;
     }
     public void run(){
         try {
@@ -44,7 +44,7 @@ public class Call_Thread extends Thread{
                 if(startMessage.equals("start"))
                     break;
             }*/
-            inetSocketAddress = new InetSocketAddress(connect_IP,Values.SERVER_PORT);
+            inetSocketAddress = new InetSocketAddress(connect_IP,connect_PORT);
             datagramSocket = new DatagramSocket();
             initAudioSetting();
             audioRecord.startRecording();
@@ -55,14 +55,14 @@ public class Call_Thread extends Thread{
         while(true) {
             try {
                 int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
-                if(count==500) {
+                if(count==500 || count==0) {
                     Log.i(Values.TAG, "sending");
                     count=0;
                 }
 
                 datagramSocket.send(new DatagramPacket(audioBuffer, 0, read, inetSocketAddress));
             } catch (Exception e) {
-                Log.i(Values.TAG, "Voice Error");
+                Log.i(Values.TAG, "Voice Error in Call_Thread");
                 e.getStackTrace();
                 return;
             }

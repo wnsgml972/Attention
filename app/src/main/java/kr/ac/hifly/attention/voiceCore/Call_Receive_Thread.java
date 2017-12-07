@@ -1,5 +1,6 @@
 package kr.ac.hifly.attention.voiceCore;
 
+import android.content.SyncStatusObserver;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
@@ -18,6 +19,7 @@ import kr.ac.hifly.attention.value.Values;
 
 public class Call_Receive_Thread extends Thread{
     private String connect_IP;
+    private int connect_PORT;
     private InetSocketAddress inetSocketAddress;
     private DatagramSocket datagramSocket;
     private DatagramPacket datagramPacket;
@@ -25,15 +27,18 @@ public class Call_Receive_Thread extends Thread{
     private byte audioBuffer[];
     private int BUFFER_SIZE;
 
-    Call_Receive_Thread(String userIP){
+    public Call_Receive_Thread(String userIP,int userPort){
+        Log.i(Values.TAG,userIP + " " + userPort + "@@@@@@@2");
         this.connect_IP = userIP;
+        this.connect_PORT = userPort;
     }
     public void run(){
         try {
-            inetSocketAddress = new InetSocketAddress(connect_IP,Values.SERVER_PORT);
+            inetSocketAddress = new InetSocketAddress(connect_IP,connect_PORT);
             datagramSocket = new DatagramSocket();
             initAudioSetting();
             mAudioTrack.play();
+            Log.i(Values.TAG,"Listen");
         }catch (Exception e){
             e.getStackTrace();
         }
@@ -41,7 +46,7 @@ public class Call_Receive_Thread extends Thread{
             try {
                 datagramPacket = new DatagramPacket(audioBuffer, 0, BUFFER_SIZE, inetSocketAddress);
                 datagramSocket.receive(datagramPacket);
-
+                Log.i(Values.TAG,"Listen" + audioBuffer[0] + " " + audioBuffer[1] + " " + audioBuffer[2]);
                 mAudioTrack.write(audioBuffer,0,audioBuffer.length);
 
                 //int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
@@ -49,7 +54,7 @@ public class Call_Receive_Thread extends Thread{
 
 
             } catch (Exception e) {
-                Log.i(Values.TAG, "Voice Error");
+                Log.i(Values.TAG, "Voice Error in Call_Receive_Thread");
                 e.getStackTrace();
                 return;
             }

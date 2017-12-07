@@ -20,10 +20,14 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.data.Call;
 import kr.ac.hifly.attention.data.User;
 import kr.ac.hifly.attention.messageCore.MessageService;
 import kr.ac.hifly.attention.value.Values;
@@ -39,6 +43,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
     private TextView textView;
     private Messenger messenger;
     private boolean isCalling = false;
+    private String roomName;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -87,6 +92,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
         String name = getIntent().getStringExtra("name");
+        roomName = getIntent().getStringExtra(Values.VOICE_ROOM);
         textView = (TextView) findViewById(R.id.main_friend_call_receive_textview);
         call_refuseFab = (FloatingActionButton) findViewById(R.id.main_friend_call_refuse_fab);
         call_receiveFab = (FloatingActionButton) findViewById(R.id.main_friend_call_receive_fab);
@@ -127,14 +133,31 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
             }
 
         } else if (view == call_receiveFab) {//call receive
-            message.what = Values.RECEIVE_CALL;
-            message.obj = Values.RECEIVE;
-            Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
-            try {
-                messenger.send(message);
-            } catch (Exception e) {
-                e.getStackTrace();
-            }
+            databaseReference.child(Values.VOICE).child(roomName).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Call call = snapshot.getValue(Call.class);
+                        if(!call.getCaller().equals(Values.myUUID)){
+                            Message msg = new Message();
+                            msg.what = Values.RECEIVE_CALL;
+                            msg.obj = snapshot.child(Values.VOICE_USER_IP).getValue(String.class) + " " + snapshot.child(Values.VOICE_USER_PORT).getValue(Integer.class);
+                            Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
+                            try {
+                                messenger.send(msg);
+                            } catch (Exception e) {
+                                e.getStackTrace();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             Log.i(Values.TAG,"이제 애니메이션!!!!!!!!!!!!");
             call_receiveFab.setVisibility(View.GONE);
             TranslateAnimation ani = new TranslateAnimation(

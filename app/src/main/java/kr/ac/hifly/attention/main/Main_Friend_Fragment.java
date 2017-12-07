@@ -53,7 +53,7 @@ public class Main_Friend_Fragment extends Fragment {
     }
     public void refresh(){
         Handler handler = new MainActivity.MyHandler((MainActivity) getActivity());
-        Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getActivity().getApplicationContext(), handler);
+        Main_Friend_Recycler_Adapter adapter = new Main_Friend_Recycler_Adapter(getContext(), handler);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE);
         adapter.addUser(null);
         adapter.addUser(new User(0, sharedPreferences.getString(Values.userName, "default"), "좋은 하루~", sharedPreferences.getString(Values.userUUID, null)));

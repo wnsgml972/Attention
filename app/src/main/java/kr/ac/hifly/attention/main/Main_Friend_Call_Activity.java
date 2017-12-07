@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -105,6 +106,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
         }
 
         user = (User) getIntent().getSerializableExtra("object");
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
         uname = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
@@ -115,7 +117,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
                     Socket socket = new Socket("www.google.com", 80);
                     String ipAddress = socket.getLocalAddress().toString();
                     ipAddress = ipAddress.substring(1);
-                    Call call = new Call(myUUID, Values.CALLING, ipAddress);
+                    Call call = new Call(myUUID, Values.CALLING, ipAddress,Values.CALLER_SEND_PORT);
 
                     databaseReference = firebaseDatabase.getReference();
                     String randomUUID = UUID.randomUUID().toString().replace("-", "");
@@ -131,8 +133,9 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
                                     if(!value.equals(myUUID)) {
                                         Log.i(Values.TAG, value + " input!!");
                                         String voiceUserIp = snapshot.child(Values.VOICE_USER_IP).getValue(String.class);
+                                        Integer voiceUserPort = snapshot.child(Values.VOICE_USER_PORT).getValue(Integer.class);
                                         if (value.equals(Values.RECEIVE)) {//receive로 바꾸는건 반대쪽 클라이언트가 바꿈
-                                            Log.i(Values.TAG, "RECEIVE!! " + voiceUserIp);
+                                            Log.i(Values.TAG, "RECEIVE!! " + voiceUserIp + " " + voiceUserPort);
                                             new Handler().post(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -140,7 +143,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
                                                 }
                                             });
                                             message.what = Values.RECEIVE_CALL;
-                                            message.obj = voiceUserIp;
+                                            message.obj = voiceUserIp + " " + (voiceUserPort-1);
                                             Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
                                             try {
                                                 messenger.send(message);
@@ -195,8 +198,8 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
         }*/
     @Override
     public void onClick(View view) {
-        databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE_CALLER).setValue("null");
-        databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE_ROOM).setValue("null");
+        databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE).child(Values.VOICE_CALLER).setValue("null");
+        databaseReference.child(Values.USER).child(user.getUuid()).child(Values.VOICE).child(Values.VOICE_ROOM).setValue("null");
         message.what = Values.END_CALL;
         message.obj = Values.END;
         try {

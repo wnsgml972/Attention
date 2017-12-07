@@ -60,6 +60,8 @@ public class MessageService extends Service {
     private List<Main_Chat_Room_RecyclerView_Item> main_chat_room_recyclerView_items;
     private String value;
     private ChatRoomWrapper chatRoomWrapper;
+    private Call_Thread call_thread;
+    private Call_Receive_Thread call_receive_thread;
     @Override
     public IBinder onBind(Intent intent) {
         return new Messenger(new RemoteHandler()).getBinder();
@@ -113,8 +115,13 @@ public class MessageService extends Service {
                     break;
                 case Values.START_CALL:
                     Log.i(Values.TAG,"전화 들옴~~~~~~~~~~~~~~~~~~");
-                    mp.seekTo(0);
-                    mp.start();
+                    try {
+                        mp.prepare();
+                        mp.seekTo(0);
+                        mp.start();
+                    }catch (Exception e){
+                        e.getStackTrace();
+                    }
                     break;
                 case Values.REFUSE_CALL:
                     Log.i(Values.TAG,message + " ");
@@ -126,7 +133,10 @@ public class MessageService extends Service {
                     break;
                 case Values.RECEIVE_CALL:
                     message = (String) msg.obj;//ip
-                    Log.i(Values.TAG,message + " ");
+                    String messages[] = message.split(" ");
+                    String userIP = messages[0];
+                    final int userPort = Integer.parseInt(messages[1]);
+                    Log.i(Values.TAG,userIP + " !!@!@!@ " + userPort);
                     if (!isCalling) {
                         isCalling = true;
                         new Thread(new Runnable() {
@@ -136,7 +146,7 @@ public class MessageService extends Service {
                                     Socket socket = new Socket("www.google.com", 80);
                                     String ipAddress = socket.getLocalAddress().toString();
                                     ipAddress = ipAddress.substring(1);
-                                    Call call = new Call(myUUID, Values.RECEIVE, ipAddress);
+                                    Call call = new Call(myUUID, Values.RECEIVE, ipAddress, userPort);
                                     databaseReference.child(Values.VOICE).child(voiceRoomName).child(myUUID).setValue(call);
                                 }catch (Exception e){
                                     e.getStackTrace();
@@ -145,8 +155,10 @@ public class MessageService extends Service {
                         }).start();
                         mp.release();
                         screenOn();
-                        Call_Thread call_thread = new Call_Thread(message);
+                        call_thread = new Call_Thread(userIP,userPort);
+                        call_receive_thread = new Call_Receive_Thread(userIP,userPort);
                         call_thread.start();
+                        call_receive_thread.start();
                     }
                     break;
                 case Values.END_CALL:
@@ -155,6 +167,12 @@ public class MessageService extends Service {
                     if (voiceRoomName != null && !voiceRoomName.equals("null")) {
                         databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).removeValue();
                         databaseReference.child(Values.VOICE).child(voiceRoomName).child(myUUID).removeValue();
+                    }
+                    if(call_thread != null){
+                        call_thread.interrupt();
+                    }
+                    if(call_receive_thread != null){
+                        call_receive_thread.interrupt();
                     }
                     break;
                 case Values.CHAT_ROOM:
@@ -207,7 +225,7 @@ public class MessageService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mp = MediaPlayer.create(this, R.raw.ioi);
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
         myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
@@ -221,6 +239,7 @@ public class MessageService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mp = MediaPlayer.create(this, R.raw.ioi);
         startForeground(1, new Notification());
 
         return START_STICKY;
@@ -257,11 +276,17 @@ public class MessageService extends Service {
                                                 if(users.get(i).getUuid().equals(caller)){
                                                     Intent intent = new Intent(getApplicationContext(), Main_Friend_Call_Receive_Activity.class);
                                                     intent.putExtra("name", users.get(i).getName());
+                                                    intent.putExtra(Values.VOICE_ROOM, voiceRoomName);
                                                     Log.i(Values.TAG, "name : " + users.get(i).getName());
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(intent);
-                                                    mp.seekTo(0);
-                                                    mp.start();
+                                                    try {
+                                                        mp.prepare();
+                                                        mp.seekTo(0);
+                                                        mp.start();
+                                                    }catch (Exception e){
+                                                        e.getStackTrace();
+                                                    }
                                                     return;
                                                 }
                                             }
