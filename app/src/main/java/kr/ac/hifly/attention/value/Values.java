@@ -16,6 +16,7 @@ public class Values {
     public static final String userUUID = "uuid";
     public static final String userName = "name";
     public static final String userTel = "tel";
+    public static final String userProfile = "userProfile";
 
     public static final String USER = "user";
     public static final String VOICE = "voice";

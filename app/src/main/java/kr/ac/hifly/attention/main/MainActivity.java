@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private static Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
     private static Main_Chat_Room_Fragment mainFragment2 = new Main_Chat_Room_Fragment();
-    private static Main_Configuration_Fragment mainFragment3 = new Main_Configuration_Fragment();
+    private static Main_Configuration_Fragment mainFragment3 = Main_Configuration_Fragment.getInstance();
     private Button voiceBtn;
     private String myUUID;
     private String myTel;
@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         viewPager.setCurrentItem(0);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.people);

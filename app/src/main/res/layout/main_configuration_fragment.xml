@@ -16,12 +16,12 @@
         >
         <ImageView
             android:id="@+id/fourth_fragment_profile_Item_Image"
-            android:layout_width="300dp"
-            android:layout_height="100dp"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="2"
-            app:srcCompat="@drawable/main_configuration_recyclerview_item_image" />
+            app:srcCompat="@drawable/main_friend_basic_icon" />
 
         <LinearLayout
             android:id="@+id/fourth_fragment_profile_info"
