@@ -11,21 +11,25 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import kr.ac.hifly.attention.data.Call;
 import kr.ac.hifly.attention.value.Values;
 
 public class Call_Thread extends Thread{
-    private String connect_IP = "223.194.154.62";
+    private String connect_IP;
     private InetSocketAddress inetSocketAddress;
     private DatagramSocket datagramSocket;
     private AudioRecord audioRecord;
-    private Socket socket;
-    private DataOutputStream dos;
-    private DataInputStream dis;
     private byte audioBuffer[];
     private int BUFFER_SIZE;
+    int count=0;
+    public Call_Thread(String userIP){
+        this.connect_IP = userIP;
+        Call_Receive_Thread call_receive_thread = new Call_Receive_Thread(userIP);
+        call_receive_thread.start();
+    }
     public void run(){
         try {
-            socket = new Socket(Values.SERVER_IP, Values.SERVER_PORT);
+         /*   socket = new Socket(Values.SERVER_IP, Values.SERVER_PORT);
             dos = new DataOutputStream(socket.getOutputStream());
             dis = new DataInputStream(socket.getInputStream());
 
@@ -39,7 +43,7 @@ public class Call_Thread extends Thread{
                 String startMessage = dis.readUTF();
                 if(startMessage.equals("start"))
                     break;
-            }
+            }*/
             inetSocketAddress = new InetSocketAddress(connect_IP,Values.SERVER_PORT);
             datagramSocket = new DatagramSocket();
             initAudioSetting();
@@ -47,10 +51,14 @@ public class Call_Thread extends Thread{
         }catch (Exception e){
             e.getStackTrace();
         }
+        Log.i(Values.TAG, "sending");
         while(true) {
             try {
                 int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
-                //Log.i(TAG, "sending");
+                if(count==500) {
+                    Log.i(Values.TAG, "sending");
+                    count=0;
+                }
 
                 datagramSocket.send(new DatagramPacket(audioBuffer, 0, read, inetSocketAddress));
             } catch (Exception e) {

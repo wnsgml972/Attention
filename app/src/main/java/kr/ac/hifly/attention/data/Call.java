@@ -6,15 +6,13 @@ package kr.ac.hifly.attention.data;
 
 public class Call {
     private String caller;//uuid
-    private String callState;
-    private String callerName;
-    private String ip;
+    private String call_state;
+    private String voice_user_ip;
 
-    public Call(String caller, String callState, String callerName, String ip) {
+    public Call(String caller, String call_state, String voice_user_ip) {
         this.caller = caller;
-        this.callState = callState;
-        this.callerName = callerName;
-        this.ip = ip;
+        this.call_state = call_state;
+        this.voice_user_ip = voice_user_ip;
     }
 
     public String getCaller() {
@@ -25,27 +23,19 @@ public class Call {
         this.caller = caller;
     }
 
-    public String getCallState() {
-        return callState;
+    public String getCall_state() {
+        return call_state;
     }
 
-    public void setCallState(String callState) {
-        this.callState = callState;
+    public void setCall_state(String call_state) {
+        this.call_state = call_state;
     }
 
-    public String getCallerName() {
-        return callerName;
+    public String getVoice_user_ip() {
+        return voice_user_ip;
     }
 
-    public void setCallerName(String callerName) {
-        this.callerName = callerName;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setVoice_user_ip(String voice_user_ip) {
+        this.voice_user_ip = voice_user_ip;
     }
 }

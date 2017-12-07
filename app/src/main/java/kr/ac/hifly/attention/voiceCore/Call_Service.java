@@ -1,3 +1,4 @@
+/*
 package kr.ac.hifly.attention.voiceCore;
 
 import android.app.Service;
@@ -81,3 +82,4 @@ public class Call_Service extends Service {
         callThread.interrupt();
     }
 }
+*/

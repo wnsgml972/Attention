@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
                 android:backgroundTint="#ef4c5c"
-                android:onClick="callEnd"
                 android:src="@drawable/call_end"
                 app:fabSize="normal" />
 
@@ -56,7 +55,6 @@
                 android:backgroundTint="#93b3f4"
                 android:tint="#ffffff"
                 android:layout_marginLeft="30dp"
-                android:onClick="call"
                 android:src="@drawable/call"
                 app:fabSize="normal" />
         </LinearLayout>

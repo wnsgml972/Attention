@@ -13,6 +13,7 @@ import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -36,7 +37,6 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
     private TextView textView;
-    private MediaPlayer mp;
     private Messenger messenger;
     private boolean isCalling = false;
 
@@ -90,7 +90,8 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
         textView = (TextView) findViewById(R.id.main_friend_call_receive_textview);
         call_refuseFab = (FloatingActionButton) findViewById(R.id.main_friend_call_refuse_fab);
         call_receiveFab = (FloatingActionButton) findViewById(R.id.main_friend_call_receive_fab);
-
+        call_refuseFab.setOnClickListener(this);
+        call_receiveFab.setOnClickListener(this);
         if (name != null) {
             textView.setText(name + "에게 전화 왔습니다...");
         }
@@ -103,6 +104,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
         Message message = new Message();
 
         if (view == call_refuseFab) {//call refuse
+            Log.i(Values.TAG,"전화거절!!!!!!!!!!!!");
             if(isCalling) {
                 message.what = Values.END_CALL;
                 message.obj = Values.END;
@@ -127,19 +129,21 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
         } else if (view == call_receiveFab) {//call receive
             message.what = Values.RECEIVE_CALL;
             message.obj = Values.RECEIVE;
+            Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
             try {
                 messenger.send(message);
             } catch (Exception e) {
                 e.getStackTrace();
             }
+            Log.i(Values.TAG,"이제 애니메이션!!!!!!!!!!!!");
             call_receiveFab.setVisibility(View.GONE);
             TranslateAnimation ani = new TranslateAnimation(
                     Animation.RELATIVE_TO_SELF, 0.0f,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.4f,
                     Animation.RELATIVE_TO_SELF, 0.0f,
                     Animation.RELATIVE_TO_SELF, 0.0f);
             ani.setFillAfter(true); // 애니메이션 후 이동한좌표에
-            ani.setDuration(1000); //지속시간
+            ani.setDuration(2000); //지속시간
             call_refuseFab.startAnimation(ani);
             isCalling = true;
         }
@@ -148,20 +152,20 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
     @Override
     protected void onStart() {
         super.onStart();
-        try {
+      /*  try {
             mp = MediaPlayer.create(this, R.raw.ioi);
             mp.seekTo(0);
             mp.start();
         } catch (Exception e) {
             e.getStackTrace();
-        }
+        }*/
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mp.release();
-        mp = null;
+    /*    mp.release();
+        mp = null;*/
 
     }
 }

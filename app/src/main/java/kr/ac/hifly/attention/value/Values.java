@@ -23,7 +23,7 @@ public class Values {
     public static final String VOICE_ROOM = "voice_room";
     public static final String VOICE_ROOM_FIRST = "voice_";
     public static final String VOICE_CALLER = "voice_caller";
-    public static final String VOICE_CALLER_NAME = "voice_caller_name";
+    public static final String VOICE_USER_IP = "voice_user_ip";
 
     public static final String VOICE_CALL_STATE = "call_state";
 
@@ -45,9 +45,10 @@ public class Values {
     public static final int RECEIVE_CALL = 2;
     public static final String RECEIVE = "receive";
     public static final int END_CALL = 3;
+    public static final int START_CALL = 4;
     public static final String END = "end";
     public static final String CALLING = "calling";
-    public static final int CHAT_ROOM = 4;
+    public static final int CHAT_ROOM = 5;
 
     public static String SetProfilePhoto= "profile_photo";
 }
