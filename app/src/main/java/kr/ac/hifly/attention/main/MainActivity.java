@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private static Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
     private static Main_Chat_Room_Fragment mainFragment2 = new Main_Chat_Room_Fragment();
-    private static Main_Configuration_Fragment mainFragment3 = Main_Configuration_Fragment.getInstance();
+    private static Main_Configuration_Fragment mainFragment3 = new Main_Configuration_Fragment();
     private Button voiceBtn;
     private String myUUID;
     private String myTel;
@@ -130,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
         startService(serviceIntent);
-
-
     }
 
     @Override
@@ -212,19 +210,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -298,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                         ContactsContract.CommonDataKinds.Phone.NUMBER
                 };
 
-// get user list
+                // get user list
                 Cursor clsCursor = getApplicationContext().getContentResolver().query(
                         ContactsContract.Contacts.CONTENT_URI,
                         arrProjection,

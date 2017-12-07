@@ -19,6 +19,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -40,6 +44,15 @@ public class Main_Configuration_Fragment extends Fragment {
     private ImageView fourth_fragment_profile_Item_Image;
     private int REQEUST_OK = 102;
     private View view;
+
+    public RequestManager mGlideRequestManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mGlideRequestManager = Glide.with(this);
+    }
+
 
     @Nullable
     @Override
@@ -66,7 +79,19 @@ public class Main_Configuration_Fragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        try{
 
+            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),data.getData());
+            mGlideRequestManager.load(data.getData()).apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
+            //mGlideRequestManager.load(data.getData()) .apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
+            //fourth_fragment_profile_Item_Image.setImageBitmap(bitmap);
+
+        }catch (Exception e) {
+            Log.e("test", e.getMessage());
+        }
+    }
 
 
 

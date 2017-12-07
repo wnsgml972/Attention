@@ -154,7 +154,8 @@ public class MessageService extends Service {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Log.i("123456", value);
                                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
-                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
+//                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
+                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item("", "", "", value));
                                             main_chat_room_recyclerView_adapter.notifyDataSetChanged();
                                             if (main_chat_room_recyclerView_items.size() != 0) {
                                                 chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
