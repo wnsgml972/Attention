@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             messenger = new Messenger(service);
             if (messenger != null) {
+                mainFragment2.setMessenger(messenger);
                 Message message = new Message();
                 message.what = 0;
                 message.obj = new Messenger(new RemoteHandler());
@@ -128,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
         serviceIntent = new Intent(this, MessageService.class);
 
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
-
         startService(serviceIntent);
+
+
     }
 
     @Override

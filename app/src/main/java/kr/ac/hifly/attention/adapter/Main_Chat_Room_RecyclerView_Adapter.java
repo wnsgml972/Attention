@@ -60,7 +60,7 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
         holder.name.setText(main_chat_room_recyclerView_items.get(position).getName());
         holder.content.setText(main_chat_room_recyclerView_items.get(position).getLast_content());
         holder.time.setText(main_chat_room_recyclerView_items.get(position).getTime());
-
+/*
         chatRoom.child(main_chat_room_recyclerView_items.get(position).getName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -77,7 +77,7 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -116,3 +116,4 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
         }
     }
 }
+

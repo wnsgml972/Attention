@@ -56,7 +56,6 @@ public class Main_Friend_Info_Activity extends AppCompatActivity {
     }
 
     public void message(View v){
-
         Intent intent = new Intent(getApplicationContext(), Main_Friend_Message_Activity.class);
         intent.putExtra("object",(User)getIntent().getSerializableExtra("object"));
         startActivity(intent);

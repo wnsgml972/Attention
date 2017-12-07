@@ -7,10 +7,21 @@ public class Main_Chat_Room_RecyclerView_Item {
     private String last_content;
     private String time;
 
-    public Main_Chat_Room_RecyclerView_Item(String name, String last_content, String time) {
+    private String chat_room_name;
+
+    public Main_Chat_Room_RecyclerView_Item(String name, String last_content, String time, String chat_room_name) {
         this.name = name;
         this.last_content = last_content;
         this.time = time;
+        this.chat_room_name = chat_room_name;
+    }
+
+    public String getChatRoomName() {
+        return chat_room_name;
+    }
+
+    public void setChatRoomName(String chat_room_name) {
+        this.chat_room_name = chat_room_name;
     }
 
     public String getName() {

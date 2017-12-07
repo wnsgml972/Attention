@@ -47,6 +47,7 @@ public class Values {
     public static final int END_CALL = 3;
     public static final String END = "end";
     public static final String CALLING = "calling";
+    public static final int CHAT_ROOM = 4;
 
     public static String SetProfilePhoto= "profile_photo";
 }

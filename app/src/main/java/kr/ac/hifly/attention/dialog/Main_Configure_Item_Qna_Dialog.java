@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,20 +58,29 @@ public class Main_Configure_Item_Qna_Dialog extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-        main_configure_recyclerView_dialog_qna_adapter_items = new ArrayList<Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item>();
 
-        databaseReference.child("");
+        databaseReference.child("QNA").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("1", "단축키가 궁금해요."));
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("2", "새소식은 어떤 기능인가요?"));
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("3", "다문화 가정이란?"));
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("4", "튜터가 되는 법은 무엇인가요?"));
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("5", "좋은 튜터의 보고서 작성법"));
-        main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("6", "튜티가 되는 법은 무엇인가요?"));
+                main_configure_recyclerView_dialog_qna_adapter_items = new ArrayList<Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item>();
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("1", dataSnapshot.child("1").getValue(String.class)));
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("2", dataSnapshot.child("2").getValue(String.class)));
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("3", dataSnapshot.child("3").getValue(String.class)));
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("4", dataSnapshot.child("4").getValue(String.class)));
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("5", dataSnapshot.child("5").getValue(String.class)));
+                main_configure_recyclerView_dialog_qna_adapter_items.add(new Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item("6", dataSnapshot.child("6").getValue(String.class)));
 
-        main_configure_recyclerView_dialog_qna_adapter = new Main_Configure_RecyclerView_Dialog_QNA_Adapter(getApplicationContext(), main_configure_recyclerView_dialog_qna_adapter_items);
-        fourth_RecyclerView_Dialog.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        fourth_RecyclerView_Dialog.setAdapter(main_configure_recyclerView_dialog_qna_adapter);
+                main_configure_recyclerView_dialog_qna_adapter = new Main_Configure_RecyclerView_Dialog_QNA_Adapter(getApplicationContext(), main_configure_recyclerView_dialog_qna_adapter_items);
+                fourth_RecyclerView_Dialog.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+                fourth_RecyclerView_Dialog.setAdapter(main_configure_recyclerView_dialog_qna_adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

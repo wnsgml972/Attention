@@ -9,11 +9,19 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.adapter.Main_Configure_RecyclerView_Dialog_QNA_Adapter;
 import kr.ac.hifly.attention.adapter.Main_Configure_RecyclerView_Dialog_Speaker_Adapter;
+import kr.ac.hifly.attention.adapter_item.Main_Configure_RecyclerView_Dialog_QNA_Adapter_Item;
 import kr.ac.hifly.attention.adapter_item.Main_Configure_RecyclerView_Dialog_Speaker_Item;
 
 /**
@@ -28,6 +36,9 @@ public class Main_Configure_Item_Speaker_Dialog extends AppCompatActivity {
     private List<Main_Configure_RecyclerView_Dialog_Speaker_Item> main_configure_recyclerView_dialog_speaker_items;
 
     private ImageButton imageButton;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(); //firebase 접속
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();  //firebase json tree 접근
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,18 +60,29 @@ public class Main_Configure_Item_Speaker_Dialog extends AppCompatActivity {
     }
 
     private void setRecyclerView(){
-        main_configure_recyclerView_dialog_speaker_items = new ArrayList<Main_Configure_RecyclerView_Dialog_Speaker_Item>();
+        databaseReference.child("Speaker").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("1","새로 출시된 다문화 어플 1.0.0 버전 업데이트"));
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("2","키워드 알림이 추가된 1.0.1 버전 업데이트"));
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("3","새 옷을 입은 1.0.1 버전"));
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("4","보기 편해진 채팅목록, 1.0.1 버전"));
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("5","보안 정책 강화 및 1.0.1 버전 업데이트"));
-        main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("6","이모티콘 관리가 더욱 쉬워진 1.0.2 버전 준비중"));
+                main_configure_recyclerView_dialog_speaker_items = new ArrayList<Main_Configure_RecyclerView_Dialog_Speaker_Item>();
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("1",dataSnapshot.child("1").getValue(String.class)));
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("2",dataSnapshot.child("2").getValue(String.class)));
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("3",dataSnapshot.child("3").getValue(String.class)));
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("4",dataSnapshot.child("4").getValue(String.class)));
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("5",dataSnapshot.child("5").getValue(String.class)));
+                main_configure_recyclerView_dialog_speaker_items.add(new Main_Configure_RecyclerView_Dialog_Speaker_Item("6",dataSnapshot.child("6").getValue(String.class)));
 
-        main_configure_recyclerView_dialog_speaker_adapter = new Main_Configure_RecyclerView_Dialog_Speaker_Adapter(getApplicationContext(),main_configure_recyclerView_dialog_speaker_items);
-        main_Configure_RecyclerView_Dialog.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
-        main_Configure_RecyclerView_Dialog.setAdapter(main_configure_recyclerView_dialog_speaker_adapter);
+                main_configure_recyclerView_dialog_speaker_adapter = new Main_Configure_RecyclerView_Dialog_Speaker_Adapter(getApplicationContext(),main_configure_recyclerView_dialog_speaker_items);
+                main_Configure_RecyclerView_Dialog.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
+                main_Configure_RecyclerView_Dialog.setAdapter(main_configure_recyclerView_dialog_speaker_adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
 

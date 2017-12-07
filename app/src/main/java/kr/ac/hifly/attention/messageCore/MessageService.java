@@ -14,7 +14,9 @@ import android.os.Messenger;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,10 +27,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import hifly.ac.kr.attention.R;
+import kr.ac.hifly.attention.adapter.Main_Chat_Room_RecyclerView_Adapter;
+import kr.ac.hifly.attention.adapter_item.ChatActivity_RecyclerView_Item;
+import kr.ac.hifly.attention.adapter_item.Main_Chat_Room_RecyclerView_Item;
 import kr.ac.hifly.attention.data.Call;
 import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.main.ChatRoomWrapper;
 import kr.ac.hifly.attention.main.MainActivity;
 import kr.ac.hifly.attention.main.Main_Friend_Call_Receive_Activity;
 import kr.ac.hifly.attention.value.Values;
@@ -45,6 +53,11 @@ public class MessageService extends Service {
     private String voiceRoomName;
     private static PowerManager.WakeLock sCpuWakeLock;
     private String myUUID;
+
+    private Main_Chat_Room_RecyclerView_Adapter main_chat_room_recyclerView_adapter;
+    private List<Main_Chat_Room_RecyclerView_Item> main_chat_room_recyclerView_items;
+    String value;
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -92,6 +105,8 @@ public class MessageService extends Service {
         @Override
         public void handleMessage(Message msg) {
             String message = null;
+            final ChatRoomWrapper chatRoomWrapper;
+
             switch (msg.what) {
                 case 0:
                     // Register activity hander
@@ -120,6 +135,45 @@ public class MessageService extends Service {
                         databaseReference.child(Values.USER).child(myUUID).child(Values.VOICE).removeValue();
                         databaseReference.child(Values.VOICE_ROOM).child(voiceRoomName).child(myUUID).removeValue();
                     }
+                    break;
+                case Values.CHAT_ROOM:
+                    Log.i("123456", "들어옴");
+                    chatRoomWrapper = (ChatRoomWrapper) msg.obj;
+                    main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
+                    main_chat_room_recyclerView_items = chatRoomWrapper.getItems();
+
+                    databaseReference.child(Values.USER).child(myUUID).child("friends").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                value = snapshot.getValue(String.class);
+                                if (value != null && !value.equals("null")) {
+
+                                    databaseReference.child("ChatRoom").child(value).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Log.i("123456", value);
+                                            ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
+                                            main_chat_room_recyclerView_adapter.notifyDataSetChanged();
+                                            if (main_chat_room_recyclerView_items.size() != 0) {
+                                                chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
+                                            }
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     break;
                 default:
                     remoteSendMessage("TEST");
@@ -171,13 +225,13 @@ public class MessageService extends Service {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         String caller = dataSnapshot.getValue(String.class);
-                                        Log.i(Values.TAG,"들어옴!!!");
+                                        Log.i(Values.TAG, "들어옴!!!");
                                         if (caller != null)
                                             Log.i(Values.TAG, caller + " " + dataSnapshot.getKey() + "@@@@@@@@@");
                                         if (caller != null && !caller.equals("null")) {
-                                            ArrayList<User> users =  MainActivity.users;
-                                            for(int i=0; i< users.size(); i++){
-                                                if(users.get(i).getUuid().equals(caller)){
+                                            ArrayList<User> users = MainActivity.users;
+                                            for (int i = 0; i < users.size(); i++) {
+                                                if (users.get(i).getUuid().equals(caller)) {
                                                     Intent intent = new Intent(getApplicationContext(), Main_Friend_Call_Receive_Activity.class);
                                                     intent.putExtra("name", users.get(i).getName());
                                                     Log.i(Values.TAG, "name : " + users.get(i).getName());

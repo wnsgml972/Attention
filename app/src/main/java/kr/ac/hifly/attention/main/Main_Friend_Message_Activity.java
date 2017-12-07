@@ -1,6 +1,7 @@
 package kr.ac.hifly.attention.main;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -41,7 +42,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     private TextView chat_activity_setName;
     private ImageView chat_activity_back;
     private Button button;
-    private String getName = "default";
     private RecyclerView chatActivity_recyclerView;
     private ChatActivity_RecyclerView_Adapter chatActivity_recyclerView_adapter;
     private List<ChatActivity_RecyclerView_Item> chatActivity_recyclerView_items;
@@ -51,20 +51,35 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
 
     private User user;
     private String chat_room = "";
-    private String myUuid = "e9c5b4967c9048bfaf9d914a0df7269d";
-    private String yourUuid = "f3655456b98848a695f426f7d714903a";
+    private String myUuid = "";
+    private String yourUuid = "";
     private int chat_room_flag  = 0;
+    private String senderName = "default";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main_friend_message);
+
         user = (User) getIntent().getSerializableExtra("object");
+        myUuid = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
+        yourUuid = user.getUuid();
+        senderName = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
+
+        Log.i("11111", myUuid + "    " + yourUuid);
+
         if (user == null) {
             Log.i(Values.TAG, "user create error");
         }
         init();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        chatActivity_recyclerView_items.clear();
     }
 
     @Override
@@ -77,7 +92,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 String time = setformat.format(date);
 
                 /*  내가 보냈을 때 flag  1,   chat_room 방 번호  */
-                ChatActivity_RecyclerView_Item item = new ChatActivity_RecyclerView_Item(getName, editText.getText().toString(), time, 1);
+                ChatActivity_RecyclerView_Item item = new ChatActivity_RecyclerView_Item(senderName, editText.getText().toString(), time, 1, myUuid);
                 databaseReference.child("ChatRoom").child(chat_room).push().setValue(item);
                 editText.setText("");
 
@@ -88,8 +103,18 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                            if(item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
+                                Log.i("111111111111", item.getSender_name() + "   " + senderName);
+                                Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
+                                item.setItemViewType(1);
+                            }
+                            else {
+                                item.setItemViewType(0);
+                            }
                             chatActivity_recyclerView_items.add(item);
                             chatActivity_recyclerView_adapter.notifyDataSetChanged();
+                            chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1); //@@
+                            Log.i(Values.TAG, "message Add");
                         }
 
                         @Override
@@ -153,7 +178,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 chat_room = dataSnapshot.getValue(String.class);
 
                 if (chat_room.equals("null")) {
-                    chat_room = "chat_" + myUuid;
+                    chat_room = "chat_" + myUuid + "  " + yourUuid;
                 }
                 databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).setValue(chat_room);
                 databaseReference.child("user").child(yourUuid).child("friends").child(myUuid).setValue(chat_room);
@@ -169,6 +194,14 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                     ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                    if(item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
+                                        Log.i("111111111111", item.getSender_name() + "   " + senderName);
+                                        Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
+                                        item.setItemViewType(1);
+                                    }
+                                    else {
+                                        item.setItemViewType(0);
+                                    }
                                     chatActivity_recyclerView_items.add(item);
                                     chatActivity_recyclerView_adapter.notifyDataSetChanged();
                                 }

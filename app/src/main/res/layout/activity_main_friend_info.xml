@@ -58,6 +58,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.5"
                     android:orientation="vertical">
+
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/main_friend_info_message_fab"
                         app:fabSize="mini"
@@ -67,10 +68,12 @@
                         android:backgroundTint="@color/color_Lite_Gray"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/sungwon_message"
+                        android:tint="@color/color_Black"
+                        android:src="@drawable/sungwon_message2"
                         app:borderWidth="0dp"
                         android:onClick="message"
                         />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
