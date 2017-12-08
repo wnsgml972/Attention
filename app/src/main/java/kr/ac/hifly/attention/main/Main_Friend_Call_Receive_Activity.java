@@ -141,7 +141,7 @@ public class Main_Friend_Call_Receive_Activity extends AppCompatActivity impleme
                         if(!call.getCaller().equals(Values.myUUID)){
                             Message msg = new Message();
                             msg.what = Values.RECEIVE_CALL;
-                            msg.obj = snapshot.child(Values.VOICE_USER_IP).getValue(String.class) + " " + snapshot.child(Values.VOICE_USER_PORT).getValue(Integer.class);
+                            msg.obj = snapshot.child(Values.VOICE_USER_IP).getValue(String.class) + " " + snapshot.child(Values.VOICE_USER_PORT).getValue(Integer.class) + " " + Values.USER;
                             Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
                             try {
                                 messenger.send(msg);

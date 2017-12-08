@@ -24,6 +24,7 @@ public class Call_Thread extends Thread{
     private int BUFFER_SIZE;
     int count=0;
     public Call_Thread(String userIP,int userPort){
+        Log.i(Values.TAG,userIP + " " + userPort + "@@@CALL");
         this.connect_IP = userIP;
         this.connect_PORT = userPort;
     }
@@ -55,7 +56,7 @@ public class Call_Thread extends Thread{
         while(true) {
             try {
                 int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
-                if(count==500 || count==0) {
+                if(count==1000) {
                     Log.i(Values.TAG, "sending");
                     count=0;
                 }

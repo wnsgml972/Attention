@@ -28,7 +28,7 @@ public class Call_Receive_Thread extends Thread{
     private int BUFFER_SIZE;
 
     public Call_Receive_Thread(String userIP,int userPort){
-        Log.i(Values.TAG,userIP + " " + userPort + "@@@@@@@2");
+        Log.i(Values.TAG,userIP + " " + userPort + "@@@RECEIVE");
         this.connect_IP = userIP;
         this.connect_PORT = userPort;
     }

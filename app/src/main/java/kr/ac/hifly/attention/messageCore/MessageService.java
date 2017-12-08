@@ -136,7 +136,7 @@ public class MessageService extends Service {
                     String messages[] = message.split(" ");
                     String userIP = messages[0];
                     final int userPort = Integer.parseInt(messages[1]);
-                    Log.i(Values.TAG,userIP + " !!@!@!@ " + userPort);
+                    final String userState = messages[2];
                     if (!isCalling) {
                         isCalling = true;
                         new Thread(new Runnable() {
@@ -146,7 +146,13 @@ public class MessageService extends Service {
                                     Socket socket = new Socket("www.google.com", 80);
                                     String ipAddress = socket.getLocalAddress().toString();
                                     ipAddress = ipAddress.substring(1);
-                                    Call call = new Call(myUUID, Values.RECEIVE, ipAddress, userPort);
+                                    Call call = null;
+                                    if(userState.equals(Values.VOICE_CALLER)) {
+                                        call = new Call(myUUID, Values.RECEIVE, ipAddress, userPort);
+                                    }
+                                    else{
+                                        call = new Call(myUUID, Values.RECEIVE, ipAddress, userPort + 1);
+                                    }
                                     databaseReference.child(Values.VOICE).child(voiceRoomName).child(myUUID).setValue(call);
                                 }catch (Exception e){
                                     e.getStackTrace();
@@ -155,10 +161,19 @@ public class MessageService extends Service {
                         }).start();
                         mp.release();
                         screenOn();
-                        call_thread = new Call_Thread(userIP,userPort);
-                        call_receive_thread = new Call_Receive_Thread(userIP,userPort);
-                        call_thread.start();
-                        call_receive_thread.start();
+                        if(userState.equals(Values.VOICE_CALLER)) {
+                            call_thread = new Call_Thread(userIP,userPort-1);
+                            call_receive_thread = new Call_Receive_Thread(userIP,userPort);
+                            call_thread.start();
+                            call_receive_thread.start();
+                        }
+                        else{
+                            call_thread = new Call_Thread(userIP,userPort+1);
+                            call_receive_thread = new Call_Receive_Thread(userIP,userPort);
+                            call_thread.start();
+                            call_receive_thread.start();
+                        }
+
                     }
                     break;
                 case Values.END_CALL:

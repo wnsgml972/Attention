@@ -143,7 +143,7 @@ public class Main_Friend_Call_Activity extends AppCompatActivity implements View
                                                 }
                                             });
                                             message.what = Values.RECEIVE_CALL;
-                                            message.obj = voiceUserIp + " " + (voiceUserPort-1);
+                                            message.obj = voiceUserIp + " " + voiceUserPort + " " + Values.VOICE_CALLER;
                                             Log.i(Values.TAG,"전화받기!!!!!!!!!!!!");
                                             try {
                                                 messenger.send(message);
