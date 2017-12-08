@@ -16,6 +16,7 @@ import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,8 +61,14 @@ public class MessageService extends Service {
     private List<Main_Chat_Room_RecyclerView_Item> main_chat_room_recyclerView_items;
     private String value;
     private ChatRoomWrapper chatRoomWrapper;
+
     private Call_Thread call_thread;
     private Call_Receive_Thread call_receive_thread;
+
+    private String value_chat_room_name;
+    private String innerValue;
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return new Messenger(new RemoteHandler()).getBinder();
@@ -108,6 +115,7 @@ public class MessageService extends Service {
         @Override
         public void handleMessage(Message msg) {
             String message = null;
+
             switch (msg.what) {
                 case 0:
                     // Register activity hander
@@ -190,7 +198,7 @@ public class MessageService extends Service {
                         call_receive_thread.interrupt();
                     }
                     break;
-                case Values.CHAT_ROOM:
+                case Values.CHAT_ROOM:                    // 채팅창 방 업데이트
                     Log.i("123456", "들어옴");
                     chatRoomWrapper = (ChatRoomWrapper) msg.obj;
                     main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
@@ -201,20 +209,62 @@ public class MessageService extends Service {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 value = snapshot.getValue(String.class);
+                                Log.i("123456", "for문 value : " + value);
                                 if (value != null && !value.equals("null")) {
+                                    innerValue = value;  // innerValue는 내가 가지고 있는 채팅방 이름
 
-                                    databaseReference.child("ChatRoom").child(value).addValueEventListener(new ValueEventListener() {
+                                    databaseReference.child("ChatRoom").child(innerValue).limitToLast(1).addChildEventListener(new ChildEventListener() {
                                         @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Log.i("123456", value);
+                                        public void onChildAdded(DataSnapshot dataSnapshot,String s) {
+
                                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                            value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
+                                            Log.i("123456", "getKey : " + dataSnapshot.getKey());
+                                            if (item == null || item.getSender_name() == null) {
+                                                Log.i("123456", "item null");
+                                                return;
+                                            }
+                                            Log.i("123456", "이름은?" + item.getSender_name());
+                                            Log.i("123456", "방이름 : " + value_chat_room_name);
+                                            int kk = 0;
+                                            for(int i=0; i<main_chat_room_recyclerView_items.size(); i++){
+                                                if(main_chat_room_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
+                                                    Log.i("123456", "들어옴들어옴");
+                                                    main_chat_room_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                                    kk = 1;
+                                                    for(int qw=0; qw<MainActivity.users.size(); qw++){
+                                                        if(MainActivity.users.get(qw).getUuid().equals(main_chat_room_recyclerView_items.get(i).getChatRoomName().split("  ")[0]));
+                                                        main_chat_room_recyclerView_items.get(i).setUser(MainActivity.users.get(qw));
+                                                    }
+                                                }
+                                            }
+                                            if(kk == 0){
+                                                main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            }
 //                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
-                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item("", "", "", value));
-                                            main_chat_room_recyclerView_adapter.notifyDataSetChanged();
+
                                             if (main_chat_room_recyclerView_items.size() != 0) {
                                                 chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
                                             }
+
+                                            main_chat_room_recyclerView_adapter.notifyDataSetChanged();
                                         }
+
+                                        @Override
+                                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                        }
+
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
 

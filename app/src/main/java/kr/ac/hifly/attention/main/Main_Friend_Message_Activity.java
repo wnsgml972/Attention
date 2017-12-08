@@ -177,7 +177,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
             public void onDataChange(DataSnapshot dataSnapshot) {
                 chat_room = dataSnapshot.getValue(String.class);
 
-                if (chat_room.equals("null")) {
+                if (chat_room == null ) {
                     chat_room = "chat_" + myUuid + "  " + yourUuid;
                 }
                 databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).setValue(chat_room);

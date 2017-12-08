@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:id="@+id/main_chat_room_recyclerview_item_king"
     android:padding="8dp">
 
     <ImageView

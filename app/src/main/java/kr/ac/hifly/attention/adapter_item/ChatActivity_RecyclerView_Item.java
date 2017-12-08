@@ -9,6 +9,7 @@ public class ChatActivity_RecyclerView_Item {
     private int itemViewType;
     private String sender_uuid;
 
+
     //빈 생성자 파이어베이스에 데이터 넣기 전에 꼭 필요!
     public ChatActivity_RecyclerView_Item() {
 
@@ -20,7 +21,9 @@ public class ChatActivity_RecyclerView_Item {
         this.time = time;
         this.itemViewType = itemViewType;
         this.sender_uuid = sender_uuid;
+
     }
+
 
     public String getSender_Uuid() {
         return sender_uuid;

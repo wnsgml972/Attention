@@ -22,6 +22,7 @@ import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.Interface.TestCallback;
 import kr.ac.hifly.attention.adapter_item.ChatActivity_RecyclerView_Item;
 import kr.ac.hifly.attention.adapter_item.Main_Chat_Room_RecyclerView_Item;
+import kr.ac.hifly.attention.data.User;
 import kr.ac.hifly.attention.main.Main_Chat_Room_Fragment;
 import kr.ac.hifly.attention.main.Main_Friend_Message_Activity;
 
@@ -40,6 +41,7 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
     private DatabaseReference chat = firebaseDatabase.getReference("chat");
     private DatabaseReference chatRoom = firebaseDatabase.getReference("ChatRoom");
     private Main_Chat_Room_RecyclerView_Adapter main_chat_room_recyclerView_adapter = this;
+
 
     public Main_Chat_Room_RecyclerView_Adapter(Context context, List<Main_Chat_Room_RecyclerView_Item> main_chat_room_recyclerView_items, TestCallback testCallback) {
         this.context = context;
@@ -90,25 +92,29 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
         public TextView content;
         public TextView time;
         public LinearLayout linearLayout;
+        private User user;
 
         public ViewHolder(View itemView) {
             super(itemView);
+
             name = itemView.findViewById(R.id.second_RecyclerView_Item_Name);
             content = itemView.findViewById(R.id.second_RecyclerView_Item_Content);
             time = itemView.findViewById(R.id.second_RecyclerView_Item_Time);
-            linearLayout = itemView.findViewById(R.id.second_RecyclerView_item_setClick);
+            linearLayout = itemView.findViewById(R.id.main_chat_room_recyclerview_item_king);
             linearLayout.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.second_RecyclerView_item_setClick:
+                case R.id.main_chat_room_recyclerview_item_king:
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         int position = getAdapterPosition();
                         Intent intent = new Intent(view.getContext(), Main_Friend_Message_Activity.class);
+
                         intent.putExtra("name", main_chat_room_recyclerView_items.get(position).getName());
                         Log.e("second_fragment_name", main_chat_room_recyclerView_items.get(position).getName());
+
                         view.getContext().startActivity(intent);
                         break;
                     }

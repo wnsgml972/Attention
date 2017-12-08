@@ -23,8 +23,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -50,7 +54,10 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
 
     private Messenger messenger;
     private ChatRoomWrapper chatRoomWrapper;
-
+    private String myUUID;
+    private String value;
+    private String innerValue;
+    private String value_chat_room_name;
 
     public void setMessenger(Messenger messenger){
         this.messenger = messenger;
@@ -92,23 +99,82 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
             null_second.setVisibility(view.INVISIBLE);
         }
 
-/*        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("asd");
-        getContext().registerReceiver(broadcastReceiver, intentFilter);*/
+        // 채팅창 방 업데이트
+        if(second_recyclerView_items.isEmpty()){
 
-/*        databaseReference.child("ChatRoom").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                null_second.setVisibility(getView().INVISIBLE);
-                second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(getName,"",""));
-                second_recyclerView_adapter.notifyDataSetChanged();
-            }
+            myUUID = getActivity().getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            databaseReference.child(Values.USER).child(myUUID).child("friends").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        value = snapshot.getValue(String.class);
+                        Log.i("123456", "for문 value : " + value);
+                        if (value != null && !value.equals("null")) {
+                            innerValue = value;  // innerValue는 내가 가지고 있는 채팅방 이름
 
-            }
-        });*/
+                            databaseReference.child("ChatRoom").child(innerValue).limitToLast(1).addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(DataSnapshot dataSnapshot,String s) {
+
+                                    ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                    value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
+                                    Log.i("123456", "getKey : " + dataSnapshot.getKey());
+                                    if (item == null || item.getSender_name() == null) {
+                                        Log.i("123456", "item null");
+                                        return;
+                                    }
+                                    Log.i("123456", "이름은?" + item.getSender_name());
+                                    Log.i("123456", "방이름 : " + value_chat_room_name);
+                                    int kk = 0;
+                                    for(int i=0; i<second_recyclerView_items.size(); i++){
+                                        if(second_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
+                                            Log.i("123456", "들어옴들어옴");
+                                            second_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            kk = 1;
+                                        }
+                                    }
+                                    if(kk == 0){
+                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                    }
+
+                                    if (second_recyclerView_items.size() != 0) {
+                                        chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
+                                    }
+                                    null_second.setVisibility(null_second.INVISIBLE);
+                                    second_recyclerView_adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                                }
+
+                                @Override
+                                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                                }
+
+                                @Override
+                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         return view;
     }
@@ -124,11 +190,13 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
         second_recyclerView_adapter = new Main_Chat_Room_RecyclerView_Adapter(getContext(), second_recyclerView_items, testCallback);
         second_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         second_RecyclerView.setAdapter(second_recyclerView_adapter);
+
+
     }
 
     @Override
     public void onClick(View view) {
-
+        Log.i(Values.TAG, "룸 번호 클릭 리스너");
     }
 
     private TestCallback testCallback = new TestCallback() {
@@ -140,21 +208,4 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
             second_recyclerView_adapter.notifyDataSetChanged();
         }
     };
-
-/*    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("asd")) {
-                String getName = intent.getStringExtra("name");
-                Log.e("잘옴!", getName);
-                null_second.setVisibility(getView().INVISIBLE);
-                second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(getName, "", "", ""));
-                second_recyclerView_adapter.notifyDataSetChanged();
-                chat.child(getName).removeValue();    // chat 지우는 코드
-                chatRoom.child(getName).removeValue();
-                second_recyclerView_adapter.notifyDataSetChanged();
-            }
-        }
-    };*/
-
 }

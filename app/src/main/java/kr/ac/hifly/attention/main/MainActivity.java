@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                             String mtel = dataSnapshot.child("tel").getValue(String.class);
                             String uuid = dataSnapshot.getKey();
                             Log.i(Values.TAG, name + " " + state + " " + uuid);
-                            databaseReference.child("user").child(myUUID).child("friends").child(uuid).setValue("null");
+ //                           databaseReference.child("user").child(myUUID).child("friends").child(uuid).setValue("null");
                             if (!uuid.equals(myUUID) && !myTel.equals(mtel)) {
                                 users.add(new User(0, name, state, uuid));
                                 mainFragment.refresh();
