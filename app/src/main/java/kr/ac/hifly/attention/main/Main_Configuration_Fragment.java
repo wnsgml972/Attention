@@ -3,10 +3,15 @@ package kr.ac.hifly.attention.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
@@ -23,8 +28,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +56,7 @@ public class Main_Configuration_Fragment extends Fragment {
     private int REQEUST_OK = 102;
     private View view;
 
+
     public RequestManager mGlideRequestManager;
 
     @Override
@@ -53,7 +65,7 @@ public class Main_Configuration_Fragment extends Fragment {
         mGlideRequestManager = Glide.with(this);
     }
 
-
+    //////////////////////////////////////// 프사 바꾸기
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,15 +95,72 @@ public class Main_Configuration_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         try{
 
-            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),data.getData());
             mGlideRequestManager.load(data.getData()).apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
-            //mGlideRequestManager.load(data.getData()) .apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
-            //fourth_fragment_profile_Item_Image.setImageBitmap(bitmap);
+
+            ////////////////성원 파이어베이스 올리기
+            FirebaseStorage storage = FirebaseStorage.getInstance("gs://attention-469ab.appspot.com");
+
+            StorageReference storageRef = storage.getReference();
+            //StorageReference Profile_Image = storageRef.child(fourth_fragment_profile_Item_Image.toString());
+            StorageReference Profile_Image = storageRef.child(Values.myUUID + "/profile/profile.jpg");
+
+           // Drawable d = fourth_fragment_profile_Item_Image.getDrawable();
+
+
+            fourth_fragment_profile_Item_Image.setDrawingCacheEnabled(true);
+            fourth_fragment_profile_Item_Image.buildDrawingCache();
+//          Bitmap bitmap = fourth_fragment_profile_Item_Image.getDrawingCache();
+            Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),data.getData() );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+            byte[] profile_data = baos.toByteArray();
+
+            UploadTask uploadTask = Profile_Image.putBytes(profile_data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
+
+
+            //////////////////////////////////////////////////
+
+//            // Get the data from an ImageView as bytes
+//            imageView.setDrawingCacheEnabled(true);
+//            imageView.buildDrawingCache();
+//            Bitmap bitmap = imageView.getDrawingCache();
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] data = baos.toByteArray();
+//
+//            UploadTask uploadTask = mountainsRef.putBytes(data);
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle unsuccessful uploads
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                }
+//            });
 
         }catch (Exception e) {
             Log.e("test", e.getMessage());
         }
     }
+    ////////////////////////프사 바꾸기
+
+
 
 
 
