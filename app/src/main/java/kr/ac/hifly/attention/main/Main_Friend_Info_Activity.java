@@ -52,10 +52,6 @@ public class Main_Friend_Info_Activity extends AppCompatActivity {
         stateTextView = (TextView) findViewById(R.id.main_friend_info_state_textView);
         profileView = (ImageView) findViewById(R.id.activity_main_friend_profile);
 
-
-
-
-
         callFab = (FloatingActionButton)findViewById(R.id.main_friend_info_call_fab);
         messageFab = (FloatingActionButton) findViewById(R.id.main_friend_info_message_fab);
         User user = (User)getIntent().getSerializableExtra("object");

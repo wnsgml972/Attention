@@ -42,8 +42,6 @@ import kr.ac.hifly.attention.value.Values;
 
 public class Main_Friend_Message_Activity extends AppCompatActivity implements View.OnClickListener {
     private EditText editText;
-    //private TextView chat_activity_setName;
-    //private ImageView chat_activity_back;
     private Button button;
     private RecyclerView chatActivity_recyclerView;
     private ChatActivity_RecyclerView_Adapter chatActivity_recyclerView_adapter;
@@ -81,7 +79,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         myUuid = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
         senderName = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
 
-        Log.i("11111", myUuid + "    " + yourUuid);
 
         init();
     }
@@ -97,6 +94,18 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn:
+                LinearLayout chat_activity_RecyclerView0 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params0 = (LinearLayout.LayoutParams) chat_activity_RecyclerView0.getLayoutParams();
+
+                LinearLayout main_friend_message_new_place0 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place0.setVisibility(view.GONE);
+
+                LinearLayout main_friend_message_new_place_emoticon0 = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon0.setVisibility(view.GONE);
+
+                // 7, 9
+                params0.weight = 9;
+                chat_activity_RecyclerView0.setLayoutParams(params0);
                 if(editText.getText().toString().equals(""))
                     return;
                 long now = System.currentTimeMillis();
@@ -104,12 +113,12 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 SimpleDateFormat setformat = new SimpleDateFormat("HH:mm");
                 String time = setformat.format(date);
 
-                /*  내가 보냈을 때 flag  1,   chat_room 방 번호  */
+                /*    내가 보냈을 때 flag  1,   chat_room 방 번호  */
                 ChatActivity_RecyclerView_Item item = new ChatActivity_RecyclerView_Item(senderName, editText.getText().toString(), time, 1, myUuid);
                 databaseReference.child("ChatRoom").child(chat_room).push().setValue(item);
                 editText.setText("");
 
-                /* Child Listener 달기 ( 처음 채팅을 하는 경우에는 여기서!,  한번만 달아야 함!)*/
+                /* Child Listener 달기 ( 처음 채팅을 하는 경우에는 여기서!,  한번만 달아야 함!)  */
                 if(chat_room_flag == 0){
                     chat_room_flag = 1;
                     databaseReference.child("ChatRoom").child(chat_room).addChildEventListener(new ChildEventListener() {
@@ -117,8 +126,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                             if(item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
-                                Log.i("111111111111", item.getSender_name() + "   " + senderName);
-                                Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
                                 item.setItemViewType(1);
                             }
                             else {
@@ -126,6 +133,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                             }
                             chatActivity_recyclerView_items.add(item);
                             chatActivity_recyclerView_adapter.notifyDataSetChanged();
+                            //chatActivity_recyclerView_adapter.notifyItemInserted(chatActivity_recyclerView_items.size() - 1);
                             chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1); //@@
                             Log.i(Values.TAG, "message Add");
                         }
@@ -154,7 +162,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
 
                 /* 스크롤 맨 밑으로 내리기, 어댑터 갱신하기 */
                 chatActivity_recyclerView_adapter.notifyDataSetChanged();
-                chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1);
+                //chatActivity_recyclerView_adapter.notifyItemInserted(chatActivity_recyclerView_items.size() - 1);
+                chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1);  //@@
                 break;
 
             case R.id.main_friend_message_plus_btn:
@@ -246,7 +255,10 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         linearLayoutManager.setStackFromEnd(true);
         chatActivity_recyclerView.setLayoutManager(linearLayoutManager);
         chatActivity_recyclerView.setAdapter(chatActivity_recyclerView_adapter);
+
+        //스크롤
         chatActivity_recyclerView.scrollToPosition(chatActivity_recyclerView_adapter.getItemCount() - 1);
+
 
         editText = (EditText) findViewById(R.id.editText);
         button = (Button) findViewById(R.id.btn);
@@ -284,7 +296,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                                             item.setItemViewType(0);
                                         }
                                         chatActivity_recyclerView_items.add(item);
-                                        chatActivity_recyclerView_adapter.notifyDataSetChanged();
+                                        chatActivity_recyclerView_adapter.notifyDataSetChanged();  // @@
                                     }
 
                                     @Override

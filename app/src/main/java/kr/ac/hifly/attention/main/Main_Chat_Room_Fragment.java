@@ -102,15 +102,15 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
 
         // 채팅창 방 업데이트
         if(second_recyclerView_items.isEmpty()){
-
             myUUID = getActivity().getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
 
             databaseReference.child(Values.USER).child(myUUID).child("friends").addValueEventListener(new ValueEventListener() {
+
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         value = snapshot.getValue(String.class);
-                        Log.i("123456", "for문 value : " + value);
+
                         if (value != null && !value.equals("null")) {
                             innerValue = value;  // innerValue는 내가 가지고 있는 채팅방 이름
 
@@ -120,25 +120,36 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
 
                                     ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                     value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
-                                    Log.i("123456", "getKey : " + dataSnapshot.getKey());
                                     if (item == null || item.getSender_name() == null) {
-                                        Log.i("123456", "item null");
                                         return;
                                     }
-                                    Log.i("123456", "이름은?" + item.getSender_name());
-                                    Log.i("123456", "방이름 : " + value_chat_room_name);
+
                                     int kk = 0;
                                     for(int i=0; i<second_recyclerView_items.size(); i++){
+
+                                        real_chat_room_name = new StringBuilder("");
+
                                         if(second_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
-                                            Log.i("123456", "들어옴들어옴");
-                                            for(int aa = MainActivity.users.size(); aa >= 0; aa--)
+                                            for(int aa = 0; aa < MainActivity.users.size(); aa++)
                                             {
-                                                if(value_chat_room_name.contains(MainActivity.users.get(i).getUuid())){
-                                                    real_chat_room_name.append(MainActivity.users.get(i).getName() + " ");
+                                                if(second_recyclerView_items.get(i).getChatRoomName().contains(MainActivity.users.get(aa).getUuid())){
+                                                    Log.i("fragment", MainActivity.users.get(aa).getName() + Integer.toString(aa));
+                                                    if(real_chat_room_name.toString().contains(MainActivity.users.get(aa).getName())) {
+                                                        //if(!second_recyclerView_items.get(i).getChatRoomName().contains(MainActivity.users.get(aa).getUuid()))
+                                                            continue;
+                                                    }
+                                                    real_chat_room_name.append(MainActivity.users.get(aa).getName() + " ");
                                                 }
                                             }
-                                            second_recyclerView_items.remove(i);
-                                            second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+
+                                            if(second_recyclerView_items.get(i).getName().contains(real_chat_room_name.toString())){
+                                                String name_val = second_recyclerView_items.get(i).getName();
+                                                second_recyclerView_items.remove(i);
+                                                second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(name_val, item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            }else {
+                                                second_recyclerView_items.remove(i);
+                                                second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            }
                                             kk = 1;
                                         }
                                     }

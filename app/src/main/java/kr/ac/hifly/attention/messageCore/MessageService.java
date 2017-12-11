@@ -204,6 +204,7 @@ public class MessageService extends Service {
                     databaseReference.child(Values.USER).child(myUUID).child("friends").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 value = snapshot.getValue(String.class);
                                 if (value != null && !value.equals("null")) {
@@ -222,16 +223,24 @@ public class MessageService extends Service {
 
                                             int kk = 0;
                                             for(int i=0; i<main_chat_room_recyclerView_items.size(); i++){
+
+                                                real_chat_room_name = new StringBuilder("");
+
                                                 if(main_chat_room_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
 
-/*                                                    for(int aa = MainActivity.users.size(); aa >= 0; aa--)  용석이 고치면 고치기
+                                                    for(int aa = 0; aa < MainActivity.users.size(); aa++)
                                                     {
-                                                        if(value_chat_room_name.contains(MainActivity.users.get(i).getUuid())){
-                                                            real_chat_room_name.append(MainActivity.users.get(i).getName() + " ");
+                                                        if(main_chat_room_recyclerView_items.get(i).getChatRoomName().contains(MainActivity.users.get(aa).getUuid())){
+                                                            if(real_chat_room_name.toString().contains(MainActivity.users.get(aa).getName())) {
+                                                                //if(!main_chat_room_recyclerView_items.get(i).getChatRoomName().contains(MainActivity.users.get(aa).getUuid()))
+                                                                    continue;
+                                                            }
+                                                            Log.i("messageService", MainActivity.users.get(aa).getName());
+                                                            real_chat_room_name.append(MainActivity.users.get(aa).getName() + " ");
                                                         }
-                                                    }*/
+                                                    }
 
-                                                    main_chat_room_recyclerView_items.remove(i);
+                                                    main_chat_room_recyclerView_items.remove(i);   //@@
                                                     main_chat_room_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                                     kk = 1;
                                                     for(int qw=0; qw<MainActivity.users.size(); qw++){
