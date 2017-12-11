@@ -124,7 +124,6 @@ public class MessageService extends Service {
                 case Values.START_CALL:
                     Log.i(Values.TAG,"전화 들옴~~~~~~~~~~~~~~~~~~");
                     try {
-                        mp.prepare();
                         mp.seekTo(0);
                         mp.start();
                     }catch (Exception e){
@@ -346,7 +345,6 @@ public class MessageService extends Service {
                                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(intent);
                                                     try {
-                                                        mp.prepare();
                                                         mp.seekTo(0);
                                                         mp.start();
                                                     }catch (Exception e){

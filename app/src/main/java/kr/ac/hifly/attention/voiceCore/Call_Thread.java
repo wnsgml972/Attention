@@ -30,7 +30,8 @@ public class Call_Thread extends Thread{
     }
     public void run(){
         try {
-         /*   socket = new Socket(Values.SERVER_IP, Values.SERVER_PORT);
+         /*
+            socket = new Socket(Values.SERVER_IP, Values.SERVER_PORT);
             dos = new DataOutputStream(socket.getOutputStream());
             dis = new DataInputStream(socket.getInputStream());
 
@@ -56,12 +57,13 @@ public class Call_Thread extends Thread{
         while(true) {
             try {
                 int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
-                if(count==1000) {
-                    Log.i(Values.TAG, "sending");
+                if(count==100) {
+                    Log.i(Values.TAG, "sending" + connect_IP + " " + connect_PORT + "@@@CALL");
                     count=0;
                 }
 
                 datagramSocket.send(new DatagramPacket(audioBuffer, 0, read, inetSocketAddress));
+                count++;
             } catch (Exception e) {
                 Log.i(Values.TAG, "Voice Error in Call_Thread");
                 e.getStackTrace();

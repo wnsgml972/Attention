@@ -34,6 +34,7 @@ public class Values {
     public static final int RECORDING_RATE = 44100;
     //private final int RECORDING_RATE = 8000;
     public static final int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
+    public static final int AUDIO_OUT_CHANNEL = AudioFormat.CHANNEL_OUT_MONO;
     //private final int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_STEREO;
     public static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     //private final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_8BIT;

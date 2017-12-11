@@ -34,8 +34,7 @@ public class Call_Receive_Thread extends Thread{
     }
     public void run(){
         try {
-            inetSocketAddress = new InetSocketAddress(connect_IP,connect_PORT);
-            datagramSocket = new DatagramSocket();
+            datagramSocket = new DatagramSocket(connect_PORT);
             initAudioSetting();
             mAudioTrack.play();
             Log.i(Values.TAG,"Listen");
@@ -44,13 +43,11 @@ public class Call_Receive_Thread extends Thread{
         }
         while(true) {
             try {
-                datagramPacket = new DatagramPacket(audioBuffer, 0, BUFFER_SIZE, inetSocketAddress);
-                datagramSocket.receive(datagramPacket);
+                datagramSocket.receive(new DatagramPacket(audioBuffer, 0, BUFFER_SIZE));
                 Log.i(Values.TAG,"Listen" + audioBuffer[0] + " " + audioBuffer[1] + " " + audioBuffer[2]);
                 mAudioTrack.write(audioBuffer,0,audioBuffer.length);
 
                 //int read = audioRecord.read(audioBuffer, 0, audioBuffer.length);
-
 
 
             } catch (Exception e) {
@@ -64,7 +61,8 @@ public class Call_Receive_Thread extends Thread{
     public void initAudioSetting() {
         BUFFER_SIZE = AudioRecord.getMinBufferSize(Values.RECORDING_RATE, Values.AUDIO_CHANNEL, Values.AUDIO_FORMAT);
         audioBuffer = new byte[BUFFER_SIZE];
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,Values.RECORDING_RATE ,Values.AUDIO_CHANNEL, Values.AUDIO_FORMAT, BUFFER_SIZE, AudioTrack.MODE_STREAM);
+        mAudioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL,Values.RECORDING_RATE ,Values.AUDIO_OUT_CHANNEL, Values.AUDIO_FORMAT, BUFFER_SIZE, AudioTrack.MODE_STREAM);
+
     }
 
 }

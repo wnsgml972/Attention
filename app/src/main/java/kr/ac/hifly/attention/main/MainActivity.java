@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, null);
         Values.myUUID = myUUID;
-        myTel = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userTel, null);
+        myTel = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userTel, "01037125066");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
         }
