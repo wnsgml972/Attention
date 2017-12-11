@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import hifly.ac.kr.attention.R;
@@ -57,13 +58,16 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     private int chat_room_flag  = 0;
     private String senderName = "default";
 
-    boolean send_user_or_char_room_name; //true,  false
-    int imageIcons[] = {R.id.main_friend_message_emoticon1, R.id.main_friend_message_emoticon2, R.id.main_friend_message_emoticon3, R.id.main_friend_message_emoticon4, R.id.main_friend_message_emoticon5, R.id.main_friend_message_emoticon6};
+    private boolean send_user_or_char_room_name; //true,  false
+    private HashMap<Integer, String> imoticonContents;
+    private int imageIcons[] = {R.id.main_friend_message_emoticon1, R.id.main_friend_message_emoticon2, R.id.main_friend_message_emoticon3, R.id.main_friend_message_emoticon4, R.id.main_friend_message_emoticon5, R.id.main_friend_message_emoticon6};
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_friend_message);
-
+        initImoticon();
         if(getIntent().getStringExtra("chat_room_name") != null){
             chat_room = getIntent().getStringExtra("chat_room_name");
             send_user_or_char_room_name = false;
@@ -78,11 +82,29 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         }
         myUuid = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
         senderName = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
+        for(int i=0; i<imageIcons.length; i++){
+            ((ImageView)findViewById(imageIcons[i])).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                    long now = System.currentTimeMillis();
+                    Date date = new Date(now);
+                    SimpleDateFormat setformat = new SimpleDateFormat("HH:mm");
+                    String time = setformat.format(date);
+                    ChatActivity_RecyclerView_Item item = new ChatActivity_RecyclerView_Item(senderName, imoticonContents.get(view.getId()), time, 1, myUuid);
+                    databaseReference.child("ChatRoom").child(chat_room).push().setValue(item);
+                }
+            });
+        }
 
         init();
     }
-
+    public void initImoticon(){
+        imoticonContents = new HashMap<Integer, String>();
+        for(int i=0; i<imageIcons.length; i++){
+            imoticonContents.put(imageIcons[i],Values.imageIconsName[i]);
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

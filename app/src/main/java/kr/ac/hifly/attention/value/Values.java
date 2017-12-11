@@ -2,6 +2,8 @@ package kr.ac.hifly.attention.value;
 
 import android.media.AudioFormat;
 
+import hifly.ac.kr.attention.R;
+
 /**
  * Created by CYSN on 2017-11-22.
  */
@@ -55,6 +57,9 @@ public class Values {
     public static String myUUID;
     public static String myName;
     public static String myTel;
-    public static String SetProfilePhoto= "profile_photo";
+    public static String SetProfilePhoto = "profile_photo";
+
+    public static String imageIconsName[] = {"(웃음)", "(키스)", "(쿠우)", "(흑흑)", "(우웅)", "(우이씨)"};
+    public static int imageIconsDrawable[] = {R.drawable.main_friend_message_emoticon_happy, R.drawable.main_friend_message_emoticon_kiss, R.drawable.main_friend_message_emoticon_sleepy, R.drawable.main_friend_message_emoticon_sad, R.drawable.main_friend_message_emoticon_sick, R.drawable.main_friend_message_emoticon_angry};
 }
 
