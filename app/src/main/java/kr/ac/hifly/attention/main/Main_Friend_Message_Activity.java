@@ -58,7 +58,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     private String senderName = "default";
 
     boolean send_user_or_char_room_name; //true,  false
-
+    int imageIcons[] = {R.id.main_friend_message_emoticon1, R.id.main_friend_message_emoticon2, R.id.main_friend_message_emoticon3, R.id.main_friend_message_emoticon4, R.id.main_friend_message_emoticon5, R.id.main_friend_message_emoticon6};
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -62,6 +63,7 @@ public class Main_Configuration_Fragment extends Fragment {
 
     /////////성원 이미지 내려받기
     private FirebaseAuth mAuth;
+
     public void setmAuth(FirebaseAuth mAuth) {
         this.mAuth = FirebaseAuth.getInstance();
     }
@@ -71,7 +73,8 @@ public class Main_Configuration_Fragment extends Fragment {
     private StorageReference storageRef;
 
     /////////////////////////
-
+    private TextView nameTextView;
+    private TextView telTextView;
 
     public RequestManager mGlideRequestManager;
 
@@ -118,15 +121,22 @@ public class Main_Configuration_Fragment extends Fragment {
         });
 
         setRecyclerView();
-
-
+        nameTextView = (TextView) view.findViewById(R.id.main_chat_room_recyclerview_user_name);
+        telTextView = (TextView) view.findViewById(R.id.main_chat_room_recyclerview_user_tel);
+        nameTextView.setText(Values.myName);
+        String tel = Values.myTel.substring(0,3);
+        tel += "-";
+        tel += Values.myTel.substring(3,7);
+        tel += "-";
+        tel += Values.myTel.substring(7);
+        telTextView.setText(tel);
         return view;
     }
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        try{
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
 
 
             mGlideRequestManager.load(data.getData()).apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
@@ -139,7 +149,7 @@ public class Main_Configuration_Fragment extends Fragment {
             fourth_fragment_profile_Item_Image.setDrawingCacheEnabled(true);
             fourth_fragment_profile_Item_Image.buildDrawingCache();
 
-            Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),data.getData() );
+            Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             image_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -160,7 +170,7 @@ public class Main_Configuration_Fragment extends Fragment {
             });
             //////////////////////////////////////////////////파이어베이스 사진 올리기 end
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.e("test", e.getMessage());
         }
     }
@@ -168,7 +178,9 @@ public class Main_Configuration_Fragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
     }
+
     private void setRecyclerView() {
 
         main_Configuration_RecyclerView_Items = new ArrayList<Main_Configuration_RecyclerView_Item>();

@@ -16,9 +16,9 @@
         android:text="이름" />
 
     <ImageView
-        android:layout_marginTop="8dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         app:srcCompat="@drawable/main_friend_basic_icon" />
 
     <LinearLayout
@@ -27,29 +27,46 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/chat_item_content"
-                android:maxWidth="200dp"
-                android:layout_marginLeft="55dp"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/speech_bubble_your"
-                android:layout_marginTop="39dp"
-                android:paddingBottom="5dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="5dp"
-                android:text="asd"
-                android:textColor="@color/color_Black"
-                android:textSize="18dp" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/chat_item_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginTop="39dp"
+                    android:background="@drawable/speech_bubble_your"
+                    android:maxWidth="200dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="5dp"
+                    android:text="asd"
+                    android:textColor="@color/color_Black"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:id="@+id/chat_image_item_content_you"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginTop="39dp" />
+            </FrameLayout>
         </RelativeLayout>
+
+
     </LinearLayout>
 </RelativeLayout>

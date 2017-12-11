@@ -38,7 +38,6 @@
                 android:textSize="23sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kim Jun Hee"
                 android:textColor="@color/color_Black"
                 />
             <TextView
@@ -47,7 +46,6 @@
                 android:layout_marginTop="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="010-2200-1646"
                 android:textColor="@color/color_Gray"
                 />
         </LinearLayout>
