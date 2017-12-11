@@ -53,5 +53,8 @@ public class Values {
     public static final int CHAT_ROOM = 5;
 
     public static String myUUID;
+    public static String myName;
+    public static String myTel;
     public static String SetProfilePhoto= "profile_photo";
 }
+

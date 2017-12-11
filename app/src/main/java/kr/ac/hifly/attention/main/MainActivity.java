@@ -2,36 +2,32 @@ package kr.ac.hifly.attention.main;
 
 
 import android.Manifest;
-import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -39,16 +35,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.data.User;
-import kr.ac.hifly.attention.data.VoiceTest;
 import kr.ac.hifly.attention.messageCore.MessageService;
 import kr.ac.hifly.attention.value.Values;
 
@@ -60,15 +58,16 @@ public class MainActivity extends AppCompatActivity {
     private static Main_Friend_Fragment mainFragment = new Main_Friend_Fragment();
     private static Main_Chat_Room_Fragment mainFragment2 = new Main_Chat_Room_Fragment();
     private static Main_Configuration_Fragment mainFragment3 = new Main_Configuration_Fragment();
-    private Button voiceBtn;
-    private String myUUID;
-    private String myTel;
     private Intent serviceIntent;   //@@
     private Messenger messenger;    //@@
     public static ArrayList<User> users = new ArrayList<>();
-
+    private CardView cardView;
     private int count;
     private int telSize;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
+    private File path;
+
     private ServiceConnection connection = new ServiceConnection() {            //@@
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -119,18 +118,50 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, null);
-        Values.myUUID = myUUID;
-        myTel = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userTel, "01037125066");
+        Values.myUUID = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, null);
+        Values.myName = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
+        Values.myTel = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userTel, "01037125066");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE, Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO, Manifest.permission.WAKE_LOCK}, 1001);
         }
-        initViewPager();
 
+        initViewPager();
+        getDataInstance();
         serviceIntent = new Intent(this, MessageService.class);
 
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
         startService(serviceIntent);
+    }
+
+    public void getDataInstance() {
+        ArrayList arrayList = null;
+        try {
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+            Log.i(Values.TAG, path.getAbsolutePath() + " " + path + " " + path.getPath() + " " + getFilesDir().getAbsolutePath() + " !!!!!!!!!!!!!!");
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(path + "/attentionTel.dat"));
+          /*  objectOutputStream.writeObject(new User(0,"이거는 들어갈걸","상태메세지야"));
+
+            User user = (User)objectInputStream.readObject();
+            Log.i(Values.TAG,user.getName());*/
+            arrayList = (ArrayList) objectInputStream.readObject();
+
+            if (arrayList == null) {
+
+            } else {
+                users = (ArrayList<User>) arrayList;
+
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Tel is Empty!", Toast.LENGTH_SHORT).show();
+
+            getSynchronizePhone(null);
+      /*      try {
+                objectOutputStream.writeObject(users);
+            }catch (Exception e1){
+                e1.getStackTrace();
+            }*/
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -172,8 +203,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         viewPager = (ViewPager) findViewById(R.id.main_frame_viewpager);
         tabLayout = (TabLayout) findViewById(R.id.main_tabLayout);
-        voiceBtn = (Button) findViewById(R.id.voiceBtn);
-
+        cardView = (CardView) findViewById(R.id.activity_main_friend_progressBar);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
@@ -212,31 +242,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_subactivity:
-                startActivity(new Intent(this, Main_Configuration_Fragment.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void voiceActivity(View v) {
-/*        Intent intent = new Intent(this, VoiceTest.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        overridePendingTransition(0, 0); //@@*/
-        getSynchronizePhone((Button)v);
-
+    /*  @Override
+      public boolean onOptionsItemSelected(MenuItem item) {
+          switch (item.getItemId()) {
+              case R.id.action_subactivity:
+                  startActivity(new Intent(this, Main_Configuration_Fragment.class));
+                  return true;
+              case R.id.toolbar_item_configure:
+                  getSynchronizePhone(((ImageButton)findViewById(R.id.toolbar_item_configure)));
+                  return true;
+              default:
+                  return super.onOptionsItemSelected(item);
+          }
+      }*/
+    public void synchronizeAboutTel(View view){
+        getSynchronizePhone(((ImageButton)findViewById(R.id.toolbar_item_configure)));
     }
 
 
     // 핸들러 객체 만들기  @@
     public static class MyHandler extends Handler {
         public static final int CHANGE_FRIEND_INFO = 1;
-        public static final int SAY_BYE = 0;
+        public static final int PROGRESS_END = 3;
         public static final int SAY_WORD = 2;
         private final WeakReference<MainActivity> mWeakActivity;
 
@@ -255,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("object", msg.getData().getSerializable("object"));
                     mWeakActivity.get().startActivity(intent);
                     break;
-                case SAY_BYE:
+                case PROGRESS_END:
                     break;
                 case SAY_WORD:
                     break;
@@ -265,16 +292,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getSynchronizePhone(final Button button) {
+    public void getSynchronizePhone(final ImageButton button) {
         count = telSize = 0;
         button.setClickable(false);
         users.clear();
+        cardView.setVisibility(View.VISIBLE);
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = firebaseDatabase.getReference();
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                databaseReference = firebaseDatabase.getReference();
                 String[] arrProjection = {
                         ContactsContract.Contacts._ID,
                         ContactsContract.Contacts.DISPLAY_NAME
@@ -311,30 +339,30 @@ public class MainActivity extends AppCompatActivity {
                     while (clsPhoneCursor.moveToNext()) {
                         tel = clsPhoneCursor.getString(0);
                     }
-                    tel = tel.replace("-","");
-                    Log.d("Unity", "연락처 사용자 ID : " + telid);
+                    tel = tel.replace("-", "");
+                   /* Log.d("Unity", "연락처 사용자 ID : " + telid);
                     Log.d("Unity", "연락처 사용자 이름 : " + name);
-                    Log.d("Unity", "연락처 사용자 폰번호 : " + tel);
+                    Log.d("Unity", "연락처 사용자 폰번호 : " + tel);*/
                     count++;
-                    if(count >= telSize)
-                        button.setClickable(true);
+                    if (count >= telSize) {
 
-                    databaseReference.child("user").orderByChild("tel").equalTo(tel).addChildEventListener(new ChildEventListener() {
+                    }
+
+
+                    databaseReference.child(Values.USER).orderByChild(Values.userTel).equalTo(tel).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                             String name = dataSnapshot.child("name").getValue(String.class);
                             String state = dataSnapshot.child("state").getValue(String.class);
                             String mtel = dataSnapshot.child("tel").getValue(String.class);
                             String uuid = dataSnapshot.getKey();
-                            Log.i(Values.TAG, name + " " + state + " " + uuid);
- //                           databaseReference.child("user").child(myUUID).child("friends").child(uuid).setValue("null");
-                            if (!uuid.equals(myUUID) && !myTel.equals(mtel)) {
+                            //Log.i(Values.TAG, name + " " + state + " " + uuid);
+                            //                           databaseReference.child("user").child(myUUID).child("friends").child(uuid).setValue("null");
+                            if (!uuid.equals(Values.myUUID) && !Values.myTel.equals(mtel)) {
                                 users.add(new User(0, name, state, uuid));
                                 mainFragment.refresh();
                             }
-
-                            Log.i(Values.TAG,telSize + " " + count + "!!!!!!!!!!!!!!!!!!");
-
+                            Log.i(Values.TAG, telSize + " " + count + "!!!!!!!!!!!!!!!!!!");
                         }
 
                         @Override
@@ -360,6 +388,30 @@ public class MainActivity extends AppCompatActivity {
                     clsPhoneCursor.close();
                 }
                 clsCursor.close();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cardView.setVisibility(View.GONE);
+                        try {
+                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(path + "/attentionTel.dat"));
+                            objectOutputStream.writeObject(users);
+                            objectOutputStream.close();
+                            Toast.makeText(getApplicationContext(), "object write success!!", Toast.LENGTH_SHORT).show();
+                            button.setClickable(true);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, 100);
+
+                /*
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putInt("message", 3);
+                message.setData(bundle);
+                mHandler.sendMessage(message);*/
+
+
             }
         }).start();
     }
