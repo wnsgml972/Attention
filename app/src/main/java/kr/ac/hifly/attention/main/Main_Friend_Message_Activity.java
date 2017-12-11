@@ -13,10 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -58,7 +60,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
 
     boolean send_user_or_char_room_name; //true,  false
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,6 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
 
         Log.i("11111", myUuid + "    " + yourUuid);
 
-
         init();
     }
 
@@ -96,6 +96,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn:
+                if(editText.getText().toString().equals(""))
+                    return;
                 long now = System.currentTimeMillis();
                 Date date = new Date(now);
                 SimpleDateFormat setformat = new SimpleDateFormat("HH:mm");
@@ -154,7 +156,40 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1);
                 break;
 
+            case R.id.main_friend_message_plus_btn:
+                LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
+                LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place.setVisibility(view.VISIBLE);
+                // 7, 9
+                params.weight = 7;
+                chat_activity_RecyclerView.setLayoutParams(params);
+                break;
+            case R.id.myItemKing:
+            case R.id.yourItemKing:
+                LinearLayout chat_activity_RecyclerView1 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) chat_activity_RecyclerView1.getLayoutParams();
+                LinearLayout main_friend_message_new_place1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place1.setVisibility(main_friend_message_new_place1.INVISIBLE);
+                // 7, 9
+                params1.weight = 9;
+                chat_activity_RecyclerView1.setLayoutParams(params1);
+                break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
+        LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+        if(main_friend_message_new_place.getVisibility() == main_friend_message_new_place.VISIBLE){
+            main_friend_message_new_place.setVisibility(main_friend_message_new_place.INVISIBLE);
+            params.weight = 9;
+            chat_activity_RecyclerView.setLayoutParams(params);
+        }
+        else
+            super.onBackPressed();
     }
 
     @Override

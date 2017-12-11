@@ -137,8 +137,8 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                                     real_chat_room_name.append(MainActivity.users.get(i).getName() + " ");
                                                 }
                                             }
-
-                                            second_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            second_recyclerView_items.remove(i);
+                                            second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                             kk = 1;
                                         }
                                     }

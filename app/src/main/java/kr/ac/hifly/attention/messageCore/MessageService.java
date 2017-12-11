@@ -197,7 +197,7 @@ public class MessageService extends Service {
                         call_receive_thread.interrupt();
                     }
                     break;
-                case Values.CHAT_ROOM:                    // 채팅창 방 업데이트
+                case Values.CHAT_ROOM:       // 채팅창 방 업데이트
                     Log.i("123456", "들어옴");
                     chatRoomWrapper = (ChatRoomWrapper) msg.obj;
                     main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
@@ -236,7 +236,8 @@ public class MessageService extends Service {
                                                         }
                                                     }*/
 
-                                                    main_chat_room_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                                    main_chat_room_recyclerView_items.remove(i);
+                                                    main_chat_room_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                                     kk = 1;
                                                     for(int qw=0; qw<MainActivity.users.size(); qw++){
                                                         if(MainActivity.users.get(qw).getUuid().equals(main_chat_room_recyclerView_items.get(i).getChatRoomName().split("  ")[0]));

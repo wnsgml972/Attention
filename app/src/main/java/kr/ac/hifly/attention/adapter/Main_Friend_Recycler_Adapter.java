@@ -39,10 +39,12 @@ public class Main_Friend_Recycler_Adapter extends RecyclerView.Adapter<RecyclerV
         typeface = ResourcesCompat.getFont(context, R.font.bm_jua);
         arrayList = new ArrayList<User>();
     }
+
     public void addUser(User user){
         arrayList.add(user);
         notifyItemInserted(arrayList.size()-1);
     }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -111,18 +113,17 @@ public class Main_Friend_Recycler_Adapter extends RecyclerView.Adapter<RecyclerV
                 @Override
                 public void onClick(View view) {
                     User user = arrayList.get(getLayoutPosition());
-
                     Message message = new Message();
                     Bundle bundle = new Bundle();
                     bundle.putInt("message",1);
                     bundle.putSerializable("object",user);
                     message.setData(bundle);
                     handler.sendMessage(message);
-
                 }
             });
         }
     }
+
     class NormalViewHolder extends RecyclerView.ViewHolder{
         TextView textView;
         public NormalViewHolder(View itemView) {
