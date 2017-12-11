@@ -138,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
             Log.i(Values.TAG, path.getAbsolutePath() + " " + path + " " + path.getPath() + " " + getFilesDir().getAbsolutePath() + " !!!!!!!!!!!!!!");
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(path + "/attentionTel.dat"));
+            File file = new File(path + "/attentionTel.dat");
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file);
           /*  objectOutputStream.writeObject(new User(0,"이거는 들어갈걸","상태메세지야"));
 
             User user = (User)objectInputStream.readObject();
