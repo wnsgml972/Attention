@@ -67,7 +67,7 @@ public class MessageService extends Service {
 
     private String value_chat_room_name;
     private String innerValue;
-
+    private StringBuilder real_chat_room_name = new StringBuilder("");
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -100,7 +100,6 @@ public class MessageService extends Service {
                         PowerManager.ON_AFTER_RELEASE, "hi");
 
         sCpuWakeLock.acquire();
-
 
         if (sCpuWakeLock != null) {
             sCpuWakeLock.release();
@@ -197,8 +196,7 @@ public class MessageService extends Service {
                         call_receive_thread.interrupt();
                     }
                     break;
-                case Values.CHAT_ROOM:                    // 채팅창 방 업데이트
-                    Log.i("123456", "들어옴");
+                case Values.CHAT_ROOM:       // 채팅창 방 업데이트
                     chatRoomWrapper = (ChatRoomWrapper) msg.obj;
                     main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
                     main_chat_room_recyclerView_items = chatRoomWrapper.getItems();
@@ -208,7 +206,6 @@ public class MessageService extends Service {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 value = snapshot.getValue(String.class);
-                                Log.i("123456", "for문 value : " + value);
                                 if (value != null && !value.equals("null")) {
                                     innerValue = value;  // innerValue는 내가 가지고 있는 채팅방 이름
 
@@ -218,18 +215,24 @@ public class MessageService extends Service {
 
                                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                             value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
-                                            Log.i("123456", "getKey : " + dataSnapshot.getKey());
+
                                             if (item == null || item.getSender_name() == null) {
-                                                Log.i("123456", "item null");
                                                 return;
                                             }
-                                            Log.i("123456", "이름은?" + item.getSender_name());
-                                            Log.i("123456", "방이름 : " + value_chat_room_name);
+
                                             int kk = 0;
                                             for(int i=0; i<main_chat_room_recyclerView_items.size(); i++){
                                                 if(main_chat_room_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
-                                                    Log.i("123456", "들어옴들어옴");
-                                                    main_chat_room_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+
+/*                                                    for(int aa = MainActivity.users.size(); aa >= 0; aa--)  용석이 고치면 고치기
+                                                    {
+                                                        if(value_chat_room_name.contains(MainActivity.users.get(i).getUuid())){
+                                                            real_chat_room_name.append(MainActivity.users.get(i).getName() + " ");
+                                                        }
+                                                    }*/
+
+                                                    main_chat_room_recyclerView_items.remove(i);
+                                                    main_chat_room_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                                     kk = 1;
                                                     for(int qw=0; qw<MainActivity.users.size(); qw++){
                                                         if(MainActivity.users.get(qw).getUuid().equals(main_chat_room_recyclerView_items.get(i).getChatRoomName().split("  ")[0]));
@@ -238,7 +241,7 @@ public class MessageService extends Service {
                                                 }
                                             }
                                             if(kk == 0){
-                                                main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                                main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                             }
 //                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
 

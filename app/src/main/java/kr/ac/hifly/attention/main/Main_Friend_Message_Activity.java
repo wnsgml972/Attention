@@ -13,10 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -35,12 +37,13 @@ import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.adapter.ChatActivity_RecyclerView_Adapter;
 import kr.ac.hifly.attention.adapter_item.ChatActivity_RecyclerView_Item;
 import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.dialog.Main_Friend_Message_Dialog;
 import kr.ac.hifly.attention.value.Values;
 
 public class Main_Friend_Message_Activity extends AppCompatActivity implements View.OnClickListener {
     private EditText editText;
-    private TextView chat_activity_setName;
-    private ImageView chat_activity_back;
+    //private TextView chat_activity_setName;
+    //private ImageView chat_activity_back;
     private Button button;
     private RecyclerView chatActivity_recyclerView;
     private ChatActivity_RecyclerView_Adapter chatActivity_recyclerView_adapter;
@@ -56,22 +59,30 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     private int chat_room_flag  = 0;
     private String senderName = "default";
 
+    boolean send_user_or_char_room_name; //true,  false
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_friend_message);
 
+        if(getIntent().getStringExtra("chat_room_name") != null){
+            chat_room = getIntent().getStringExtra("chat_room_name");
+            send_user_or_char_room_name = false;
+        }
+
         user = (User) getIntent().getSerializableExtra("object");
+        if (user == null) {
+            Log.i(Values.TAG, "user create error");
+        }else {
+            yourUuid = user.getUuid();
+            send_user_or_char_room_name = true;
+        }
         myUuid = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userUUID, "null");
-        yourUuid = user.getUuid();
         senderName = getSharedPreferences(Values.userInfo, Context.MODE_PRIVATE).getString(Values.userName, "null");
 
         Log.i("11111", myUuid + "    " + yourUuid);
 
-        if (user == null) {
-            Log.i(Values.TAG, "user create error");
-        }
         init();
     }
 
@@ -86,6 +97,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn:
+                if(editText.getText().toString().equals(""))
+                    return;
                 long now = System.currentTimeMillis();
                 Date date = new Date(now);
                 SimpleDateFormat setformat = new SimpleDateFormat("HH:mm");
@@ -144,6 +157,75 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1);
                 break;
 
+            case R.id.main_friend_message_plus_btn:
+                LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
+
+                LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place.setVisibility(view.VISIBLE);
+
+                LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon.setVisibility(view.GONE);
+
+                // 7, 9
+                params.weight = 7;
+                chat_activity_RecyclerView.setLayoutParams(params);
+                break;
+            case R.id.myItemKing:
+            case R.id.yourItemKing:
+                LinearLayout chat_activity_RecyclerView1 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) chat_activity_RecyclerView1.getLayoutParams();
+
+                LinearLayout main_friend_message_new_place1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place1.setVisibility(view.GONE);
+
+                LinearLayout main_friend_message_new_place_emoticon1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon1.setVisibility(view.GONE);
+
+                // 7, 9
+                params1.weight = 9;
+                chat_activity_RecyclerView1.setLayoutParams(params1);
+                break;
+            case R.id.main_friend_message_emoticon:
+                LinearLayout chat_activity_RecyclerView2 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) chat_activity_RecyclerView2.getLayoutParams();
+
+                LinearLayout main_friend_message_new_place2 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place2.setVisibility(view.GONE);
+
+                LinearLayout main_friend_message_new_place_emoticon2 = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon2.setVisibility(view.VISIBLE);
+                // 7, 9
+                params2.weight = 7;
+                chat_activity_RecyclerView2.setLayoutParams(params2);
+                break;
+            case R.id.main_friend_message_invite_friend:
+                Intent intent = new Intent(view.getContext(), Main_Friend_Message_Dialog.class);
+                intent.putExtra("myUuid",myUuid);
+                startActivity(intent);
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
+        LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+        LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+
+        if(main_friend_message_new_place.getVisibility() == main_friend_message_new_place.VISIBLE){
+            main_friend_message_new_place.setVisibility(main_friend_message_new_place.GONE);
+            params.weight = 9;
+            chat_activity_RecyclerView.setLayoutParams(params);
+        }
+        else if(main_friend_message_new_place_emoticon.getVisibility() == main_friend_message_new_place_emoticon.VISIBLE){
+            main_friend_message_new_place_emoticon.setVisibility(main_friend_message_new_place_emoticon.GONE);
+            params.weight = 9;
+            chat_activity_RecyclerView.setLayoutParams(params);
+        }
+        else {
+            super.onBackPressed();
         }
     }
 
@@ -170,76 +252,128 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         button = (Button) findViewById(R.id.btn);
         button.setOnClickListener(this);
 
-
+        if(send_user_or_char_room_name == true) {
         /* user 방 번호 세팅   여기서부터 생명주기를 생각하면서 inner class로 작성한 것이 중요  */
-        databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                chat_room = dataSnapshot.getValue(String.class);
+            databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    chat_room = dataSnapshot.getValue(String.class);
 
-                if (chat_room == null ) {
-                    chat_room = "chat_" + myUuid + "  " + yourUuid;
-                }
-                databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).setValue(chat_room);
-                databaseReference.child("user").child(yourUuid).child("friends").child(myUuid).setValue(chat_room);
+                    if (chat_room == null) {
+                        chat_room = "chat_" + myUuid + "  " + yourUuid;
+                    }
+                    databaseReference.child("user").child(myUuid).child("friends").child(yourUuid).setValue(chat_room);
+                    databaseReference.child("user").child(yourUuid).child("friends").child(myUuid).setValue(chat_room);
 
                 /* ChatRoom에 이미 방을 연적이 있는지 (한번이라도 채팅을 한적이 있는지 체크)  */
-                databaseReference.child("ChatRoom").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    databaseReference.child("ChatRoom").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
                         /* Child Listener 달기 (Child 가 있다면 )*/
-                        if(dataSnapshot.hasChild(chat_room)){
-                            chat_room_flag = 1;
-                            databaseReference.child("ChatRoom").child(chat_room).addChildEventListener(new ChildEventListener() {
-                                @Override
-                                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                    ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
-                                    if(item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
-                                        Log.i("111111111111", item.getSender_name() + "   " + senderName);
-                                        Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
-                                        item.setItemViewType(1);
+                            if (dataSnapshot.hasChild(chat_room)) {
+                                chat_room_flag = 1;
+                                databaseReference.child("ChatRoom").child(chat_room).addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                        ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                        if (item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
+                                            Log.i("111111111111", item.getSender_name() + "   " + senderName);
+                                            Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
+                                            item.setItemViewType(1);
+                                        } else {
+                                            item.setItemViewType(0);
+                                        }
+                                        chatActivity_recyclerView_items.add(item);
+                                        chatActivity_recyclerView_adapter.notifyDataSetChanged();
                                     }
-                                    else {
-                                        item.setItemViewType(0);
+
+                                    @Override
+                                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
                                     }
-                                    chatActivity_recyclerView_items.add(item);
-                                    chatActivity_recyclerView_adapter.notifyDataSetChanged();
-                                }
 
-                                @Override
-                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                                    @Override
+                                    public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                    @Override
+                                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                                    }
+                                });
+                            }
                         }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        else {    /* ChatRoom에 이미 방을 연적이 있는지 (한번이라도 채팅을 한적이 있는지 체크)  */
+            databaseReference.child("ChatRoom").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        /* Child Listener 달기 (Child 가 있다면 )*/
+                    if (dataSnapshot.hasChild(chat_room)) {
+                        chat_room_flag = 1;
+                        databaseReference.child("ChatRoom").child(chat_room).addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
+                                if (item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
+                                    Log.i("111111111111", item.getSender_name() + "   " + senderName);
+                                    Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
+                                    item.setItemViewType(1);
+                                } else {
+                                    item.setItemViewType(0);
+                                }
+                                chatActivity_recyclerView_items.add(item);
+                                chatActivity_recyclerView_adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                }
+            });
+        }
     }
 }
