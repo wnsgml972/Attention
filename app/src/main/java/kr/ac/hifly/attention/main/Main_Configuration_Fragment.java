@@ -30,6 +30,8 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -37,6 +39,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,7 @@ import hifly.ac.kr.attention.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import kr.ac.hifly.attention.adapter.Main_Configuration_RecyclerView_Adapter;
 import kr.ac.hifly.attention.adapter_item.Main_Configuration_RecyclerView_Item;
+import kr.ac.hifly.attention.data.User;
 import kr.ac.hifly.attention.value.Values;
 
 public class Main_Configuration_Fragment extends Fragment {
@@ -55,6 +59,18 @@ public class Main_Configuration_Fragment extends Fragment {
     private ImageView fourth_fragment_profile_Item_Image;
     private int REQEUST_OK = 102;
     private View view;
+
+    /////////성원 이미지 내려받기
+    private FirebaseAuth mAuth;
+    public void setmAuth(FirebaseAuth mAuth) {
+        this.mAuth = FirebaseAuth.getInstance();
+    }
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    private StorageReference storageRef;
+
+    /////////////////////////
 
 
     public RequestManager mGlideRequestManager;
@@ -76,6 +92,21 @@ public class Main_Configuration_Fragment extends Fragment {
         fourth_RecyclerView = (RecyclerView) view.findViewById(R.id.fourth_RecyclerView);
 
         fourth_fragment_profile_Item_Image = (ImageView) view.findViewById(R.id.fourth_fragment_profile_Item_Image);
+        /////////////어플 켜자마자 자기자신 설정 탭 에서 프사 바꿔져있기
+        mAuth = FirebaseAuth.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://attention-469ab.appspot.com/" + Values.myUUID + "/profile/profile.jpg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getActivity()).load(uri).apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+        /////////////////
         fourth_fragment_profile_Item_Image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,29 +119,28 @@ public class Main_Configuration_Fragment extends Fragment {
 
         setRecyclerView();
 
+
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         try{
 
+
             mGlideRequestManager.load(data.getData()).apply(RequestOptions.bitmapTransform(new CircleCrop())).thumbnail(0.1f).into(fourth_fragment_profile_Item_Image);
 
             ////////////////성원 파이어베이스 올리기
             FirebaseStorage storage = FirebaseStorage.getInstance("gs://attention-469ab.appspot.com");
-
             StorageReference storageRef = storage.getReference();
-            //StorageReference Profile_Image = storageRef.child(fourth_fragment_profile_Item_Image.toString());
             StorageReference Profile_Image = storageRef.child(Values.myUUID + "/profile/profile.jpg");
-
-           // Drawable d = fourth_fragment_profile_Item_Image.getDrawable();
-
 
             fourth_fragment_profile_Item_Image.setDrawingCacheEnabled(true);
             fourth_fragment_profile_Item_Image.buildDrawingCache();
-//          Bitmap bitmap = fourth_fragment_profile_Item_Image.getDrawingCache();
+
             Bitmap image_bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),data.getData() );
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             image_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 
@@ -128,47 +158,17 @@ public class Main_Configuration_Fragment extends Fragment {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 }
             });
-
-
-            //////////////////////////////////////////////////
-
-//            // Get the data from an ImageView as bytes
-//            imageView.setDrawingCacheEnabled(true);
-//            imageView.buildDrawingCache();
-//            Bitmap bitmap = imageView.getDrawingCache();
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] data = baos.toByteArray();
-//
-//            UploadTask uploadTask = mountainsRef.putBytes(data);
-//            uploadTask.addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle unsuccessful uploads
-//                }
-//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                }
-//            });
+            //////////////////////////////////////////////////파이어베이스 사진 올리기 end
 
         }catch (Exception e) {
             Log.e("test", e.getMessage());
         }
     }
-    ////////////////////////프사 바꾸기
-
-
-
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-
     private void setRecyclerView() {
 
         main_Configuration_RecyclerView_Items = new ArrayList<Main_Configuration_RecyclerView_Item>();

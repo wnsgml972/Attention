@@ -164,6 +164,9 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
                 main_friend_message_new_place.setVisibility(view.VISIBLE);
 
+                LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon.setVisibility(view.GONE);
+
                 // 7, 9
                 params.weight = 7;
                 chat_activity_RecyclerView.setLayoutParams(params);
@@ -176,8 +179,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 LinearLayout main_friend_message_new_place1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
                 main_friend_message_new_place1.setVisibility(view.GONE);
 
-                LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
-                main_friend_message_new_place_emoticon.setVisibility(view.GONE);
+                LinearLayout main_friend_message_new_place_emoticon1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon1.setVisibility(view.GONE);
 
                 // 7, 9
                 params1.weight = 9;
@@ -216,8 +219,8 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
             params.weight = 9;
             chat_activity_RecyclerView.setLayoutParams(params);
         }
-        else if(main_friend_message_new_place_emoticon.getVisibility() == main_friend_message_new_place.VISIBLE){
-            main_friend_message_new_place.setVisibility(main_friend_message_new_place.GONE);
+        else if(main_friend_message_new_place_emoticon.getVisibility() == main_friend_message_new_place_emoticon.VISIBLE){
+            main_friend_message_new_place_emoticon.setVisibility(main_friend_message_new_place_emoticon.GONE);
             params.weight = 9;
             chat_activity_RecyclerView.setLayoutParams(params);
         }
