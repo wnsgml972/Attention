@@ -138,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
             Log.i(Values.TAG, path.getAbsolutePath() + " " + path + " " + path.getPath() + " " + getFilesDir().getAbsolutePath() + " !!!!!!!!!!!!!!");
-            File file = new File(path + "/attentionTel.dat");
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(path + "/attentionTel.dat"));
           /*  objectOutputStream.writeObject(new User(0,"이거는 들어갈걸","상태메세지야"));
 
             User user = (User)objectInputStream.readObject();
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Tel is Empty!", Toast.LENGTH_SHORT).show();
 
-            getSynchronizePhone(null);
+            //getSynchronizePhone(null);
       /*      try {
                 objectOutputStream.writeObject(users);
             }catch (Exception e1){
