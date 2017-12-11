@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "484824978961-8cl1itfo9naodhfccbfvgh93qalgo9vk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hifly.ac.kr.attention",
+            "certificate_hash": "8c16b99e81f97ec6bc460e6cf9d7513e5c06da0f"
+          }
+        },
+        {
           "client_id": "484824978961-hk1c3le8hv7bke2ar92bued2dko41nev.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -36,6 +36,12 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:glide-transformations:3.0.1'
+//    //성원 프사 내리기
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+//    //compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+//    compile 'com.google.firebase:firebase-storage:11.0.1'
+//    //compile 'com.google.firebase:firebase-auth:11.0.1'
+//    compile 'com.firebaseui:firebase-ui:2.0.1'
     // If you want to use the GPU Filters
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
