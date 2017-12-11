@@ -37,6 +37,7 @@ import hifly.ac.kr.attention.R;
 import kr.ac.hifly.attention.adapter.ChatActivity_RecyclerView_Adapter;
 import kr.ac.hifly.attention.adapter_item.ChatActivity_RecyclerView_Item;
 import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.dialog.Main_Friend_Message_Dialog;
 import kr.ac.hifly.attention.value.Values;
 
 public class Main_Friend_Message_Activity extends AppCompatActivity implements View.OnClickListener {
@@ -159,8 +160,10 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
             case R.id.main_friend_message_plus_btn:
                 LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
+
                 LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
                 main_friend_message_new_place.setVisibility(view.VISIBLE);
+
                 // 7, 9
                 params.weight = 7;
                 chat_activity_RecyclerView.setLayoutParams(params);
@@ -169,11 +172,34 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
             case R.id.yourItemKing:
                 LinearLayout chat_activity_RecyclerView1 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
                 LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) chat_activity_RecyclerView1.getLayoutParams();
+
                 LinearLayout main_friend_message_new_place1 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
-                main_friend_message_new_place1.setVisibility(main_friend_message_new_place1.INVISIBLE);
+                main_friend_message_new_place1.setVisibility(view.GONE);
+
+                LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon.setVisibility(view.GONE);
+
                 // 7, 9
                 params1.weight = 9;
                 chat_activity_RecyclerView1.setLayoutParams(params1);
+                break;
+            case R.id.main_friend_message_emoticon:
+                LinearLayout chat_activity_RecyclerView2 = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
+                LinearLayout.LayoutParams params2 = (LinearLayout.LayoutParams) chat_activity_RecyclerView2.getLayoutParams();
+
+                LinearLayout main_friend_message_new_place2 = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+                main_friend_message_new_place2.setVisibility(view.GONE);
+
+                LinearLayout main_friend_message_new_place_emoticon2 = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+                main_friend_message_new_place_emoticon2.setVisibility(view.VISIBLE);
+                // 7, 9
+                params2.weight = 7;
+                chat_activity_RecyclerView2.setLayoutParams(params2);
+                break;
+            case R.id.main_friend_message_invite_friend:
+                Intent intent = new Intent(view.getContext(), Main_Friend_Message_Dialog.class);
+                intent.putExtra("myUuid",myUuid);
+                startActivity(intent);
                 break;
         }
     }
@@ -183,13 +209,21 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         LinearLayout chat_activity_RecyclerView = (LinearLayout)findViewById(R.id.main_chat_activity_RecyclerView);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) chat_activity_RecyclerView.getLayoutParams();
         LinearLayout main_friend_message_new_place = (LinearLayout)findViewById(R.id.main_friend_message_new_place);
+        LinearLayout main_friend_message_new_place_emoticon = (LinearLayout)findViewById(R.id.main_friend_message_new_place_emoticon);
+
         if(main_friend_message_new_place.getVisibility() == main_friend_message_new_place.VISIBLE){
-            main_friend_message_new_place.setVisibility(main_friend_message_new_place.INVISIBLE);
+            main_friend_message_new_place.setVisibility(main_friend_message_new_place.GONE);
             params.weight = 9;
             chat_activity_RecyclerView.setLayoutParams(params);
         }
-        else
+        else if(main_friend_message_new_place_emoticon.getVisibility() == main_friend_message_new_place.VISIBLE){
+            main_friend_message_new_place.setVisibility(main_friend_message_new_place.GONE);
+            params.weight = 9;
+            chat_activity_RecyclerView.setLayoutParams(params);
+        }
+        else {
             super.onBackPressed();
+        }
     }
 
     @Override

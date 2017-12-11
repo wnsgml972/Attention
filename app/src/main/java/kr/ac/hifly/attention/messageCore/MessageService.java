@@ -101,7 +101,6 @@ public class MessageService extends Service {
 
         sCpuWakeLock.acquire();
 
-
         if (sCpuWakeLock != null) {
             sCpuWakeLock.release();
             sCpuWakeLock = null;
@@ -198,7 +197,6 @@ public class MessageService extends Service {
                     }
                     break;
                 case Values.CHAT_ROOM:       // 채팅창 방 업데이트
-                    Log.i("123456", "들어옴");
                     chatRoomWrapper = (ChatRoomWrapper) msg.obj;
                     main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
                     main_chat_room_recyclerView_items = chatRoomWrapper.getItems();
@@ -208,7 +206,6 @@ public class MessageService extends Service {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 value = snapshot.getValue(String.class);
-                                Log.i("123456", "for문 value : " + value);
                                 if (value != null && !value.equals("null")) {
                                     innerValue = value;  // innerValue는 내가 가지고 있는 채팅방 이름
 
@@ -218,17 +215,15 @@ public class MessageService extends Service {
 
                                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                             value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
-                                            Log.i("123456", "getKey : " + dataSnapshot.getKey());
+
                                             if (item == null || item.getSender_name() == null) {
-                                                Log.i("123456", "item null");
                                                 return;
                                             }
-                                            Log.i("123456", "이름은?" + item.getSender_name());
-                                            Log.i("123456", "방이름 : " + value_chat_room_name);
+
                                             int kk = 0;
                                             for(int i=0; i<main_chat_room_recyclerView_items.size(); i++){
                                                 if(main_chat_room_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
-                                                    Log.i("123456", "들어옴들어옴");
+
 /*                                                    for(int aa = MainActivity.users.size(); aa >= 0; aa--)  용석이 고치면 고치기
                                                     {
                                                         if(value_chat_room_name.contains(MainActivity.users.get(i).getUuid())){

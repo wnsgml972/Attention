@@ -17,16 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-      <!--  <service android:name=".MessageService">
-            <intent-filter>
-                <action android:name="hifly.ac.kr.attention.message_service"/>
-            </intent-filter>
-        </service>-->
 
         <activity android:name="kr.ac.hifly.attention.main.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -58,7 +52,9 @@
         <activity android:name="kr.ac.hifly.attention.dialog.Main_Configure_Item_Speaker_Dialog"
             android:theme="@style/Theme.AppCompat.Dialog"
             />
-
+        <activity android:name="kr.ac.hifly.attention.dialog.Main_Friend_Message_Dialog"
+            android:theme="@style/Theme.AppCompat.Dialog"
+            />
         <!--This is service part-->
         <service android:name="kr.ac.hifly.attention.messageCore.MessageService"/>
         <service android:name="kr.ac.hifly.attention.voiceCore.Call_Service"/>
