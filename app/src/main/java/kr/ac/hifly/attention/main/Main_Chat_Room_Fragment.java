@@ -58,6 +58,7 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
     private String value;
     private String innerValue;
     private String value_chat_room_name;
+    private StringBuilder real_chat_room_name = new StringBuilder("");
 
     public void setMessenger(Messenger messenger){
         this.messenger = messenger;
@@ -130,12 +131,19 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                     for(int i=0; i<second_recyclerView_items.size(); i++){
                                         if(second_recyclerView_items.get(i).getChatRoomName().equals(value_chat_room_name)){
                                             Log.i("123456", "들어옴들어옴");
-                                            second_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                            for(int aa = MainActivity.users.size(); aa >= 0; aa--)
+                                            {
+                                                if(value_chat_room_name.contains(MainActivity.users.get(i).getUuid())){
+                                                    real_chat_room_name.append(MainActivity.users.get(i).getName() + " ");
+                                                }
+                                            }
+
+                                            second_recyclerView_items.set(i,new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                             kk = 1;
                                         }
                                     }
                                     if(kk == 0){
-                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                     }
 
                                     if (second_recyclerView_items.size() != 0) {

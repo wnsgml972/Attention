@@ -7,9 +7,7 @@ public class Main_Chat_Room_RecyclerView_Item {
     private String name;
     private String last_content;
     private String time;
-
     private String chat_room_name;
-
     private User user;
 
     public Main_Chat_Room_RecyclerView_Item(String name, String last_content, String time, String chat_room_name) {

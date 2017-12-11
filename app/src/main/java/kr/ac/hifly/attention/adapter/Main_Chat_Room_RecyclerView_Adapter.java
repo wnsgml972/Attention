@@ -42,7 +42,6 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
     private DatabaseReference chatRoom = firebaseDatabase.getReference("ChatRoom");
     private Main_Chat_Room_RecyclerView_Adapter main_chat_room_recyclerView_adapter = this;
 
-
     public Main_Chat_Room_RecyclerView_Adapter(Context context, List<Main_Chat_Room_RecyclerView_Item> main_chat_room_recyclerView_items, TestCallback testCallback) {
         this.context = context;
         this.main_chat_room_recyclerView_items = main_chat_room_recyclerView_items;
@@ -62,24 +61,6 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
         holder.name.setText(main_chat_room_recyclerView_items.get(position).getName());
         holder.content.setText(main_chat_room_recyclerView_items.get(position).getLast_content());
         holder.time.setText(main_chat_room_recyclerView_items.get(position).getTime());
-/*
-        chatRoom.child(main_chat_room_recyclerView_items.get(position).getName()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    Log.e("asd어탭터 성공 ㅋ", "---------");
-                    ChatActivity_RecyclerView_Item chatActivity_recyclerView_item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
-                    testCallback.test(chatActivity_recyclerView_item, position);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     @Override
@@ -111,11 +92,12 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         int position = getAdapterPosition();
                         Intent intent = new Intent(view.getContext(), Main_Friend_Message_Activity.class);
-
-                        intent.putExtra("name", main_chat_room_recyclerView_items.get(position).getName());
-                        Log.e("second_fragment_name", main_chat_room_recyclerView_items.get(position).getName());
-
+                        /* 채팅방 클릭했을 시 */
+                        Log.i("click", main_chat_room_recyclerView_items.get(position).getChatRoomName());
+                        intent.putExtra("chat_room_name", main_chat_room_recyclerView_items.get(position).getChatRoomName());
                         view.getContext().startActivity(intent);
+
+
                         break;
                     }
             }
