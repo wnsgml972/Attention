@@ -323,7 +323,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                                             item.setItemViewType(0);
                                         }
                                         chatActivity_recyclerView_items.add(item);
-                                        chatActivity_recyclerView_adapter.notifyDataSetChanged();  // @@
+                                        chatActivity_recyclerView_adapter.notifyItemInserted(chatActivity_recyclerView_adapter.getItemCount()-1);  // @@
                                         chatActivity_recyclerView.scrollToPosition(chatActivity_recyclerView_adapter.getItemCount()-1);
                                     }
 

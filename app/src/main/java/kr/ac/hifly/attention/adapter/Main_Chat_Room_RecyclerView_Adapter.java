@@ -23,6 +23,7 @@ import kr.ac.hifly.attention.Interface.TestCallback;
 import kr.ac.hifly.attention.adapter_item.ChatActivity_RecyclerView_Item;
 import kr.ac.hifly.attention.adapter_item.Main_Chat_Room_RecyclerView_Item;
 import kr.ac.hifly.attention.data.User;
+import kr.ac.hifly.attention.main.MainActivity;
 import kr.ac.hifly.attention.main.Main_Chat_Room_Fragment;
 import kr.ac.hifly.attention.main.Main_Friend_Message_Activity;
 
@@ -95,6 +96,14 @@ public class Main_Chat_Room_RecyclerView_Adapter extends RecyclerView.Adapter<Ma
                         /* 채팅방 클릭했을 시 */
                         Log.i("click", main_chat_room_recyclerView_items.get(position).getChatRoomName());
                         intent.putExtra("chat_room_name", main_chat_room_recyclerView_items.get(position).getChatRoomName());
+                     /*   for(int i=0; i< MainActivity.users.size(); i++){
+                            if(main_chat_room_recyclerView_items.get(position).getChatRoomName().contains()){
+
+                            }
+                        }*/
+                        intent.putExtra("sender",main_chat_room_recyclerView_items.get(position).getName());
+                        intent.putExtra("object",main_chat_room_recyclerView_items.get(position).getUser());
+
                         view.getContext().startActivity(intent);
 
 

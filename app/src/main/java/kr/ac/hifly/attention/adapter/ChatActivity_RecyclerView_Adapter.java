@@ -77,8 +77,10 @@ public class ChatActivity_RecyclerView_Adapter extends RecyclerView.Adapter<Recy
                         return;
                     }
             }
+            ((ViewHolder_you) holder).chat_name.setVisibility(View.VISIBLE);
             ((ViewHolder_you) holder).chat_content.setVisibility(View.VISIBLE);
             ((ViewHolder_you) holder).imageView.setVisibility(View.GONE);
+            ((ViewHolder_you) holder).chat_name.setText(list.get(position).getSender_name());
             ((ViewHolder_you) holder).chat_content.setText(list.get(position).getChat_content());
         }else {
             for(int i=0; i< Values.imageIconsName.length; i++){
@@ -107,7 +109,7 @@ public class ChatActivity_RecyclerView_Adapter extends RecyclerView.Adapter<Recy
 
         public ViewHolder_you(View itemView) {
             super(itemView);
-            //chat_name = (TextView)itemView.findViewById(R.id.chat_item_name);
+            chat_name = (TextView)itemView.findViewById(R.id.chat_item_name);
             chat_content = (TextView)itemView.findViewById(R.id.chat_item_content);
             imageView = (ImageView)itemView.findViewById(R.id.chat_image_item_content_you);
         }
