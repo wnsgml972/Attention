@@ -33,7 +33,7 @@ public class Values {
 
     public static final int CALLER_SEND_PORT = 10035;
     public static int SERVER_UDP_PORT = 10036;
-    public static final int RECORDING_RATE = 44100;
+    public static final int RECORDING_RATE = 22050;
     //private final int RECORDING_RATE = 8000;
     public static final int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
     public static final int AUDIO_OUT_CHANNEL = AudioFormat.CHANNEL_OUT_MONO;
