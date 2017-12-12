@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -154,9 +155,10 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                                 item.setItemViewType(0);
                             }
                             chatActivity_recyclerView_items.add(item);
-                            chatActivity_recyclerView_adapter.notifyDataSetChanged();
-                            //chatActivity_recyclerView_adapter.notifyItemInserted(chatActivity_recyclerView_items.size() - 1);
-                            chatActivity_recyclerView.getLayoutManager().scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1); //@@
+                            chatActivity_recyclerView_adapter.notifyItemInserted(chatActivity_recyclerView_adapter.getItemCount()-1);
+                            chatActivity_recyclerView.scrollToPosition(chatActivity_recyclerView_adapter.getItemCount()-1);
+
+                            //chatActivity_recyclerView.scrollToPosition(chatActivity_recyclerView.getAdapter().getItemCount() - 1); //@@
                             Log.i(Values.TAG, "message Add");
                         }
 
@@ -235,6 +237,11 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                 intent.putExtra("myUuid",myUuid);
                 startActivity(intent);
                 break;
+            case R.id.main_friend_message_voice_chat:
+                Intent mintent = new Intent(getApplicationContext(), Main_Friend_Call_Activity.class);
+                mintent.putExtra("object",(User)getIntent().getSerializableExtra("object"));
+                startActivity(mintent);
+                break;
         }
     }
 
@@ -274,7 +281,7 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
         chatActivity_recyclerView = (RecyclerView) findViewById(R.id.chat_activity_RecyclerView);
         chatActivity_recyclerView_adapter = new ChatActivity_RecyclerView_Adapter(getApplicationContext(), chatActivity_recyclerView_items);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setStackFromEnd(true);
+        //linearLayoutManager.setStackFromEnd(true);
         chatActivity_recyclerView.setLayoutManager(linearLayoutManager);
         chatActivity_recyclerView.setAdapter(chatActivity_recyclerView_adapter);
 
@@ -311,14 +318,13 @@ public class Main_Friend_Message_Activity extends AppCompatActivity implements V
                                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                         ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                         if (item.getSender_name().equals(senderName) && item.getSender_Uuid().equals(myUuid)) {
-                                            Log.i("111111111111", item.getSender_name() + "   " + senderName);
-                                            Log.i("2222222222222", item.getSender_Uuid() + "   " + myUuid);
                                             item.setItemViewType(1);
                                         } else {
                                             item.setItemViewType(0);
                                         }
                                         chatActivity_recyclerView_items.add(item);
                                         chatActivity_recyclerView_adapter.notifyDataSetChanged();  // @@
+                                        chatActivity_recyclerView.scrollToPosition(chatActivity_recyclerView_adapter.getItemCount()-1);
                                     }
 
                                     @Override

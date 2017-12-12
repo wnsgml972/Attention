@@ -137,6 +137,7 @@
                     android:id="@+id/main_friend_message_voice_chat"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:onClick="onClick"
                     app:srcCompat="@drawable/main_friend_message_voice_chat" />
 
                 <TextView
