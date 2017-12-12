@@ -67,7 +67,11 @@ public class MessageService extends Service {
 
     private String value_chat_room_name;
     private String innerValue;
-    private StringBuilder real_chat_room_name = new StringBuilder("");
+    private StringBuilder real_chat_room_name;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private StringBuilder shared_chat_room_name;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -201,6 +205,12 @@ public class MessageService extends Service {
                     main_chat_room_recyclerView_adapter = chatRoomWrapper.getAdapter();
                     main_chat_room_recyclerView_items = chatRoomWrapper.getItems();
 
+                    /* shared init */
+                    sharedPreferences = getSharedPreferences(Values.shared_name, Context.MODE_PRIVATE);
+                    editor = sharedPreferences.edit();
+                    shared_chat_room_name = new StringBuilder(sharedPreferences.getString(Values.shared_chat_room_name,""));
+
+
                     databaseReference.child(Values.USER).child(myUUID).child("friends").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -213,6 +223,11 @@ public class MessageService extends Service {
                                     databaseReference.child("ChatRoom").child(innerValue).limitToLast(1).addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(DataSnapshot dataSnapshot,String s) {
+
+                                            int shared_index = shared_chat_room_name.toString().split("!").length;
+
+                                            Log.i("1어", shared_chat_room_name.toString());
+                                            Log.i("2어 init index", Integer.toString(shared_index));
 
                                             ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                             value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
@@ -235,11 +250,14 @@ public class MessageService extends Service {
                                                                 //if(!main_chat_room_recyclerView_items.get(i).getChatRoomName().contains(MainActivity.users.get(aa).getUuid()))
                                                                     continue;
                                                             }
-                                                            Log.i("messageService", MainActivity.users.get(aa).getName());
                                                             real_chat_room_name.append(MainActivity.users.get(aa).getName() + " ");
                                                         }
                                                     }
-
+                                                    if(!shared_chat_room_name.toString().contains(real_chat_room_name)) {
+                                                        shared_chat_room_name.append(real_chat_room_name + "!");
+                                                        editor.putString(Values.shared_chat_room_name, shared_chat_room_name.toString());
+                                                        editor.apply();
+                                                    }
                                                     main_chat_room_recyclerView_items.remove(i);   //@@
                                                     main_chat_room_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                                     kk = 1;
@@ -250,9 +268,16 @@ public class MessageService extends Service {
                                                 }
                                             }
                                             if(kk == 0){
-                                                main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                                Log.i("3어", shared_chat_room_name.toString());
+                                                shared_chat_room_name = new StringBuilder(sharedPreferences.getString(Values.shared_chat_room_name,""));
+                                                Log.i("4어", shared_chat_room_name.toString());
+                                                String shared_spilt_value[] = shared_chat_room_name.toString().split("!");
+                                                Log.i("5어", Integer.toString(shared_spilt_value.length));
+                                                Log.i("6어 index", Integer.toString(shared_index));
+
+                                                main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(shared_spilt_value[--shared_index], item.getChat_content(), item.getTime(), value_chat_room_name));
+
                                             }
-//                                            main_chat_room_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(item.getSender_name(), item.getChat_content(), item.getTime(), value));
 
                                             if (main_chat_room_recyclerView_items.size() != 0) {
                                                 chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -58,7 +59,11 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
     private String value;
     private String innerValue;
     private String value_chat_room_name;
-    private StringBuilder real_chat_room_name = new StringBuilder("");
+    private StringBuilder real_chat_room_name;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private StringBuilder shared_chat_room_name;
+    int shared_index = 0;
 
     public void setMessenger(Messenger messenger){
         this.messenger = messenger;
@@ -91,6 +96,12 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
 
         View view = inflater.inflate(R.layout.main_chat_room_fragment, container, false);
         second_RecyclerView = (RecyclerView) view.findViewById(R.id.chat_Room_RecyclerView);
+
+        /* shared init */
+        sharedPreferences = getActivity().getSharedPreferences(Values.shared_name, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        shared_chat_room_name = new StringBuilder("");
+
         setRecyclerView();
 
         null_second = (TextView) view.findViewById(R.id.null_second_item);
@@ -118,6 +129,12 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot,String s) {
 
+                                    if(shared_index == 0)
+                                        shared_index = shared_chat_room_name.toString().split("!").length;
+
+                                    Log.i("1어디", shared_chat_room_name.toString());
+                                    Log.i("2어디 init index", Integer.toString(shared_index));
+
                                     ChatActivity_RecyclerView_Item item = dataSnapshot.getValue(ChatActivity_RecyclerView_Item.class);
                                     value_chat_room_name = dataSnapshot.getRef().getParent().getKey();
                                     if (item == null || item.getSender_name() == null) {
@@ -144,9 +161,19 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
 
                                             if(second_recyclerView_items.get(i).getName().contains(real_chat_room_name.toString())){
                                                 String name_val = second_recyclerView_items.get(i).getName();
+                                                if(!shared_chat_room_name.toString().contains(second_recyclerView_items.get(i).getName())) {
+                                                    shared_chat_room_name.append(second_recyclerView_items.get(i).getName() + "!");
+                                                    editor.putString(Values.shared_chat_room_name, shared_chat_room_name.toString());
+                                                    editor.apply();
+                                                }
                                                 second_recyclerView_items.remove(i);
                                                 second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(name_val, item.getChat_content(), item.getTime(), value_chat_room_name));
                                             }else {
+                                                if(!shared_chat_room_name.toString().contains(second_recyclerView_items.get(i).getName())) {
+                                                    shared_chat_room_name.append(real_chat_room_name.toString() + "!");
+                                                    editor.putString(Values.shared_chat_room_name, shared_chat_room_name.toString());
+                                                    editor.apply();
+                                                }
                                                 second_recyclerView_items.remove(i);
                                                 second_recyclerView_items.add(0, new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
                                             }
@@ -154,11 +181,22 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                         }
                                     }
                                     if(kk == 0){
-                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(real_chat_room_name.toString(), item.getChat_content(), item.getTime(), value_chat_room_name));
+                                        Log.i("3어디", shared_chat_room_name.toString());
+                                        shared_chat_room_name = new StringBuilder(sharedPreferences.getString(Values.shared_chat_room_name,""));
+                                        Log.i("4어디", shared_chat_room_name.toString());
+                                        if(shared_index == 1)
+                                            shared_index = shared_chat_room_name.toString().split("!").length;
+                                        String shared_spilt_value[] = shared_chat_room_name.toString().split("!");   //여기 사실 스필트에 인덱스도 넣어서 만들어야함ㅠㅠ
+                                        Log.i("5어디", Integer.toString(shared_spilt_value.length));
+                                        Log.i("6어디 index", Integer.toString(shared_index));
+
+                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(shared_spilt_value[--shared_index], item.getChat_content(), item.getTime(), value_chat_room_name));
+
                                     }
 
                                     if (second_recyclerView_items.size() != 0) {
-                                        chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
+                                        if(chatRoomWrapper.getNullTextView() != null)
+                                            chatRoomWrapper.getNullTextView().setVisibility(chatRoomWrapper.getNullTextView().INVISIBLE);
                                     }
                                     null_second.setVisibility(null_second.INVISIBLE);
                                     second_recyclerView_adapter.notifyDataSetChanged();
@@ -194,7 +232,6 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                 }
             });
         }
-
         return view;
     }
 

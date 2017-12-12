@@ -61,5 +61,8 @@ public class Values {
 
     public static String imageIconsName[] = {"(웃음)", "(키스)", "(쿠우)", "(흑흑)", "(우웅)", "(우이씨)"};
     public static int imageIconsDrawable[] = {R.drawable.main_friend_message_emoticon_happy, R.drawable.main_friend_message_emoticon_kiss, R.drawable.main_friend_message_emoticon_sleepy, R.drawable.main_friend_message_emoticon_sad, R.drawable.main_friend_message_emoticon_sick, R.drawable.main_friend_message_emoticon_angry};
+
+    public static String shared_chat_room_name = "";
+    public static String shared_name = "";
 }
 
