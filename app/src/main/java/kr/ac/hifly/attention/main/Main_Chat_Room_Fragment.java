@@ -63,7 +63,7 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private StringBuilder shared_chat_room_name;
-    int shared_index = 0;
+    int shared_index = 2;
 
     public void setMessenger(Messenger messenger){
         this.messenger = messenger;
@@ -129,8 +129,10 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot,String s) {
 
-                                    if(shared_index == 0)
-                                        shared_index = shared_chat_room_name.toString().split("!").length;
+                                    Log.i("읭어디 init index", Integer.toString(shared_index));
+                                    if(shared_index == 2)
+                                        shared_index = 10;
+
 
                                     Log.i("1어디", shared_chat_room_name.toString());
                                     Log.i("2어디 init index", Integer.toString(shared_index));
@@ -184,13 +186,15 @@ public class Main_Chat_Room_Fragment extends Fragment implements View.OnClickLis
                                         Log.i("3어디", shared_chat_room_name.toString());
                                         shared_chat_room_name = new StringBuilder(sharedPreferences.getString(Values.shared_chat_room_name,""));
                                         Log.i("4어디", shared_chat_room_name.toString());
-                                        if(shared_index == 1)
-                                            shared_index = shared_chat_room_name.toString().split("!").length;
+                                        if(shared_index == 10)
+                                            shared_index = shared_chat_room_name.toString().split("!").length + 2;
                                         String shared_spilt_value[] = shared_chat_room_name.toString().split("!");   //여기 사실 스필트에 인덱스도 넣어서 만들어야함ㅠㅠ
                                         Log.i("5어디", Integer.toString(shared_spilt_value.length));
                                         Log.i("6어디 index", Integer.toString(shared_index));
-
-                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(shared_spilt_value[--shared_index], item.getChat_content(), item.getTime(), value_chat_room_name));
+                                        int index = (--shared_index)-2;
+                                        if(index < 0)
+                                            index = 0;
+                                        second_recyclerView_items.add(new Main_Chat_Room_RecyclerView_Item(shared_spilt_value[index], item.getChat_content(), item.getTime(), value_chat_room_name));
 
                                     }
 
