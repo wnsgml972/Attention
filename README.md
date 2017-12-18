@@ -1,5 +1,5 @@
 # Attention
 Android Attention Project
 
-## 11-09
-First init & Connect collaborators
+## Youtube url 
+https://www.youtube.com/watch?v=DbyK6r5cwBs&feature=youtu.be
